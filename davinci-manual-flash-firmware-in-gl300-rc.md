@@ -50,7 +50,7 @@ with the same issue appearing on all of them).
 
 _If you need to diagnose the cause of your issue, do not just assume it's the
 same as described here; to through the diagnosis graph to find your cause:
-[Fix no video feed / black screen / no image transmission / no FPV on Ph3 Pro](https://phantompilots.com/threads/fix-no-video-feed-black-screen-no-image-transmission-no-fpv-on-ph3-pro.133487)_
+[Fix no video feed / black screen / no image transmission / no FPV on Ph3 Pro](phantom-3-no-video-feed-black-screen-diagnose-and-fix.md)_
 
 ## Preparations
 
@@ -433,7 +433,7 @@ Then your root filesystem is probably damaged. The booting in such case will usu
 ```
 
 But sometimes it will continue to spew hundreds of `UBI error` instead.
-Go to "[Re-flashing root filesystem](re-flashing-root-filesystem)"
+Go to "[Re-flashing root filesystem](#re-flashing-root-filesystem)"
 chapter after yiu finish this one, if any of this happens.
 
 ### 5. When all is good
@@ -463,7 +463,7 @@ the described cases - you will have to ask someone proficient with Linux
 for help.
 
 Before jumping to the chapter which described your issue, be sure to read
-"[Downloading images and tools](downloading-images-and-tools)" below to get all the things you need
+"[Downloading images and tools](#downloading-images-and-tools)" below to get all the things you need
 to re-flash.
 
 ## Downloading images and tools
@@ -471,7 +471,7 @@ to re-flash.
 In case you'll be be flashing bootloader, you will need Serial Flasher Host
 Program from Texas Instruments.
 Original releases of this tool are at [Arago Project Releases](http://arago-project.org/files/releases/).
-They were linked to at, now defuc,
+They were linked to it at, now defuc,
 [DaVinci GIT Linux Kernel Releases page](https://web.archive.org/web/20100525171208/http://processors.wiki.ti.com/index.php/DaVinci_GIT_Linux_Kernel_Releases).
 The latest release which still supports the DM36x line is
 `davinci-psp_03.01.01.39`. Inside, there is `board-utils-davinci.tar.gz`
@@ -500,7 +500,7 @@ Where to get them:
 
 * `ubl?.img`, `u-boot.img` and `uImage` are included in every firmware update,
   and can be extracted from there. I already did that and you can download them
-  [in this archive](https://phantompilots.com/attachments/gl300_dm36x_extracted_firmwares-zip.111454/).
+  [in this archive](firmware/gl300_dm36x_extracted_firmwares.zip).
   There are files for different firmware versions inside; use the one closest
   to the version you have on your RC; or just latest one, if you're unsure.
   Despite the file name, those files are proper for both GL300 and GL658 remotes.
@@ -544,7 +544,7 @@ is now waiting for commands from PC. Since we don't know how to type the
 commands by hand, we will use a tool which will do that for us - `sfh_DM36x.exe`.
 
 Copy `sfh_DM36x.exe`, `u-boot_prop.img` and `ubl1_prop.img` to a directory
-with short path, for example `C:\tmp` on Windows. Open
+with short path, for example `C:\tmp` if on Windows. Open
 [shell window](https://en.wikipedia.org/wiki/Shell_(computing))
 in that folder. Close PuTTY. Execute the command below in the shell:
 
