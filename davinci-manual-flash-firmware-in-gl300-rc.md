@@ -2,58 +2,133 @@
 
 ## Preamble
 
-Here you will find not only instructions to blindly follow, but an explanation of what you're really doing. Fixing is also preceded by diagnosis - this is how all repairs should look like.
+Here you will find not only instructions to blindly follow, but an explanation
+of what you're really doing. Fixing is also preceded by diagnosis - this is
+how all repairs should look like.
 
-Electronics is not black magic, and it is not fixed by rituals. Some people are sometimes able to fix their issues by a series of actions they don't really understand, then announce their specific solution as universal cure. This is not how any of this should work. It seem easier and faster, but it is the dark side.
+Electronics is not black magic, and it is not fixed by rituals. Some people
+are sometimes able to fix their issues by a series of actions they don't
+really understand, then announce their specific solution as universal cure.
+This is not how any of this should work. It seem easier and faster, but it
+is the dark side.
 
-I hope this guide to give readers understanding of what they're doing. Knowledge acquired here can be then used to fix different boards and devices. All digital devices are very similar in how they work.
+I hope this guide to give readers understanding of what they're doing.
+Knowledge acquired here can be then used to fix different boards and
+devices. All digital devices are very similar in how they work.
 
-This guide was made with help from [USER=119969]@oemgpsnav[/USER]. It is also a result of previous cooperation with [Mefistotelis from the OGs group](https://github.com/mefistotelis). The [OGs wiki](https://github.com/o-gs/dji-firmware-tools/wiki) is referenced heavily in this article and was the primary source of information for it (I did contributed to that wiki a bit as well).
+This guide was made with help from [@oemgpsnav](https://phantompilots.com/members/119969/).
+It is also a result of previous cooperation with
+[Mefistotelis from the OGs group](https://github.com/mefistotelis).
+The [OGs wiki](https://github.com/o-gs/dji-firmware-tools/wiki) is
+referenced heavily in this article and was the primary source of information
+for it (I did contributed to that wiki a bit as well).
 
 ## Problem statement
 
 This instruction concerns the following DJI Remote Controllers:
-* Phantom 3 Pro/Advanced, the first release version, GL300a (the "a" at end is important)
-* Phantom 3 Pro/Advanced, any version if you have HDMI output on your RC (HMDI output board in an upgrade compatible with all GL300 RCs)
-* Phantom 4 Standard, if you have HDMI output on your RC (I don't really know if it applies to other versions on Phantom 4)
-* Inspire 1 RC (GL658A)
+
+* _Phantom 3 Pro/Advanced_, the first release version, *GL300a* (the "a"
+  at end is important)
+
+* _Phantom 3 Pro/Advanced_, any version if you have HDMI output on your RC
+  (*HMDI output board* in an upgrade compatible with all GL300 RCs)
+
+* _Phantom 4 Standard_, if you have *HDMI output* on your RC (I don't really
+  know if it applies to other versions of Phantom 4)
+
+* _Inspire 1_ RC (*GL658A*)
 
 The instruction shows how to diagnose and solve the following issue:
-After connecting Mobile Device to the drone via USB-to-microUSB cable, the mobile device does not react on the connection. Mobile device does not find/recognize the RC.
 
-We will assume the issue was verified to be caused by RC (by either trying another RC which worked, or checking different cables and mobile devices with the same issue appearing on all of them).
+After connecting Mobile Device to the drone via USB-to-microUSB cable,
+the mobile device does not react on the connection. Mobile device does
+not find/recognize the RC.
 
-[I]If you need to diagnose the cause of your issue, do not just assume it's the same as described here; to through the diagnosis graph to find your cause:
-[URL='https://phantompilots.com/threads/fix-no-video-feed-black-screen-no-image-transmission-no-fpv-on-ph3-pro.133487/']Fix no video feed / black screen / no image transmission / no FPV on Ph3 Pro[/URL][/I]
+We will assume the issue was verified to be caused by RC (by either trying
+another RC which worked, or checking different cables and mobile devices
+with the same issue appearing on all of them).
+
+_If you need to diagnose the cause of your issue, do not just assume it's the
+same as described here; to through the diagnosis graph to find your cause:
+[Fix no video feed / black screen / no image transmission / no FPV on Ph3 Pro](https://phantompilots.com/threads/fix-no-video-feed-black-screen-no-image-transmission-no-fpv-on-ph3-pro.133487)_
 
 ## Preparations
 
-First, remove the Interface Board from the RC. There is an instruction for that from OEM:
-[URL='https://www.youtube.com/watch?v=fBt7FiH0mII']How to install HDMI Output Module on Phantom 3 Remote Controller[/URL]
+First, remove the Interface Board from the RC. There is an instruction for that from OEM:  
+[How to install HDMI Output Module on Phantom 3 Remote Controller](https://www.youtube.com/watch?v=fBt7FiH0mII)
 
-Check the board from physical damage. You can use a multimeter to check whether USB output pins are connected, and no capacitors are shorted. If there are no indicators of physical damage the issue is probably software-related. To be sure, we need to check whether the chip which controls the board boots properly.
+Check the board from physical damage. You can use a multimeter to check
+whether USB output pins are connected, and no capacitors are shorted.
+If there are no indicators of physical damage the issue is probably
+software-related. To be sure, we need to check whether the chip which
+controls the board boots properly.
 
 To further diagnose and fix the board, you will need:
-* a temperature controlled soldering iron, and enough skill to solder wires to test points on the board
-* a USB-to-TTL converter (also known by brand name - FTDI), which supports 3.3V logic (note that if device claims it's "universal" but there's no jumper to switch to 3.3V, then it is crap and will not work)
-* ability to use that converter from your PC (if you know what command line tools are or what a text terminal is, you should be ok)
-* Good amperage USB output (ie. from a USB hub), or just additional 5V power supply; The USB standard of 500mA is the minimum power the board needs, and any drop below that will cause the chip to fail flashing. So it is better to use USB with high current rating (ie. 1A charging outputs).
 
-The board consists of Texas Instruments DM36x Media Controller chip, and additional chips needed for it to work: RAM chip, NAND chip and voltage regulators. To get more info about this board, look at [URL='https://github.com/o-gs/dji-firmware-tools/wiki/GL300-Interface-board']GL300 Interface board description by OGs[/URL]. The DM36x is a processor which runs Linux as operating system. We need to hook to it and check whether Linux boots properly.
+* a temperature controlled *soldering iron*, and enough skill to solder wires
+  to test points on the board
+
+* a *USB-to-TTL* converter (also known by brand name - FTDI), which supports
+  *3.3V logic* (note that if device claims it's "universal" but there's no
+  jumper to switch to 3.3V, then it is crap and will not work)
+
+* ability to use that converter from your PC (if you know what command line
+  tools are or what a text terminal is, you should be ok)
+
+* Good amperage USB output (ie. from a USB hub), or just *additional 5V power
+  supply*; The USB standard of 500mA is the minimum power the board needs,
+  and any drop below that will cause the chip to fail flashing. So it is
+  better to use USB with high current rating (ie. 1A charging outputs).
+
+The board consists of _Texas Instruments DM36x Media Controller chip_, and
+additional chips needed for it to work: RAM chip, NAND chip and voltage
+regulators. To get more info about this board, look at
+[GL300 Interface board description by OGs](https://github.com/o-gs/dji-firmware-tools/wiki/GL300-Interface-board).
+
+The _DM36x_ is a processor which runs Linux as operating system. We need
+to hook to it and check whether Linux boots properly.
 
 ## Soldering to debug serial interface
 
-We have our board out, and USB-to-TTL converter ready. Let's solder cables to the test pads. What is a test pad? Those are the small copper dots on the Printed Circuit Board - they are used during manufacturing to test whether the board works as intended. The pads are named with white paint on most boards; if your board doesn't have the white names, find the test pads location on photos in "GL300 Interface board description" linked above. It is best to solder detachable wires to the board; most USB-to-TTLs have pin outputs on which you slide a cable, so this comes with the package.
+We have our board out, and USB-to-TTL converter ready. Let's solder cables
+to the test pads. What is a test pad? Those are the small copper dots on the
+Printed Circuit Board - they are used during manufacturing to test whether
+the board works as intended. The pads are named with white paint on most
+boards; if your board doesn't have the white names, find the test pads
+location on photos in "_GL300 Interface board description_" linked above.
+It is best to solder detachable wires to the board; most USB-to-TTLs have
+pin outputs on which you slide a cable, so this comes with the package.
 
 To the soldering:
-* At back of the Interface Board, you will see test pads marked "`GND`" and "`VCC_5V`", close to each other. Solder wires to these (you should be able to solder to any GND pad instead; but the one closest to VCC is the safest choice). Make sure you will [U]be able to easily connect/disconnect the 5V power supply[/U]. You will want to be able to reset your power while other pads are all connected.
-* Also at back of the Interface Board, you will see test pads marked "`UART0_RX`" and "`UART0_TX`" (or "`368_RX`" and "`368_TX`", on some boards). Solder wires to these as well.
+
+* At back of the Interface Board, you will see test pads marked "`GND`"
+  and "`VCC_5V`", close to each other. Solder wires to these (you should
+  be able to solder to any GND pad instead; but the one closest to VCC is
+  the safest choice). Make sure you will [U]be able to easily
+  connect/disconnect the 5V power supply[/U]. You will want to be able
+  to reset your power while other pads are all connected.
+
+* Also at back of the Interface Board, you will see test pads marked
+  "`UART0_RX`" and "`UART0_TX`" (or "`368_RX`" and "`368_TX`", on some
+  boards). Solder wires to these as well.
 
 Now, connect everything:
-* `GND` cable to GND pin of your USB-to-TTL; if you're using external power supply, connect GND to there as well (something may burn if both grounds are not floating; but today we mostly have floating grounds in devices, so it should be ok)
-* `VCC_5V` cable [U]do not connect yet[/U] - you will be connecting it to 5V power supply, either from USB or external supply)
-* `UART0_RX` cable to the TX pin of your USB-to-TTL, and `UART0_TX` cable to the RX pin. Yes, usually we connect RX-TX and TX-RX (R is for Receive and T is for Transmit; if something is transmitting, we want the other side to receive)
-* plug your USB-to-TTL converter into a port from your PC; make sure to switch it to 3.3V logic, if it has a jumper for that
+
+* `GND` cable to GND pin of your USB-to-TTL; if you're using external power
+  supply, connect GND to there as well (something may burn if both grounds
+  are not floating; but today we mostly have floating grounds in devices,
+  so it should be ok)
+
+* `VCC_5V` cable <u>do not connect yet</u> - you will be connecting it to
+  5V power supply, either from USB or external supply)
+
+* `UART0_RX` cable to the TX pin of your USB-to-TTL, and `UART0_TX` cable
+  to the RX pin. Yes, usually we connect RX-TX and TX-RX (*R* is for Receive
+  and *T* is for Transmit; if something is transmitting, we want the other
+  side to receive)
+
+* plug your USB-to-TTL converter into a port from your PC; make sure to switch
+  it to 3.3V logic, if it has a jumper for that
 
 [ATTACH type="full" alt="flashing_dm36x_usb2ttl_soldering.jpg"]111458[/ATTACH]
 
