@@ -104,8 +104,8 @@ To the soldering:
 * At back of the Interface Board, you will see test pads marked "`GND`"
   and "`VCC_5V`", close to each other. Solder wires to these (you should
   be able to solder to any GND pad instead; but the one closest to VCC is
-  the safest choice). Make sure you will [U]be able to easily
-  connect/disconnect the 5V power supply[/U]. You will want to be able
+  the safest choice). Make sure you will <u>be able to easily
+  connect/disconnect the 5V power supply</u>. You will want to be able
   to reset your power while other pads are all connected.
 
 * Also at back of the Interface Board, you will see test pads marked
@@ -206,8 +206,8 @@ Go to "[Finding issues in logs from terminal](#finding-issues-in-logs-from-termi
 chapter after you finish this one.
 
 After log are captured, you can disconnect the 5V power. In any of the cases
-above, you may want to read "_Overview of the boot process_" chapter below to
-get an understanding of the whole thing.
+above, you may want to read "[Overview of the boot process](#overview-of-the-boot-process)"
+chapter below to get an understanding of the whole thing.
 
 ## Overview of the boot process
 
@@ -275,7 +275,7 @@ The place where question marks are will contain offset from which the kernel
 is tried; we're not interested in these yet. As long as a line like above
 exists in logs, bootloader is working correctly.
 If there's no such line, then you need to re-flash bootloader. Go to 
-"[Re-flashing bootloader](re-flashing-bootloader)" chapter below.
+"[Re-flashing bootloader](#re-flashing-bootloader)" chapter below.
 
 For reference, here are all the messages a bootloader has shown on a specific,
 fully working board:
@@ -528,13 +528,25 @@ mode, solder the Boot Select service pad `BTSEL` to `3.3V` pad.
 
 ![GL300 Interface board with BTSEL test pad pulled up](pictures/flashing_dm36x_usb2ttl_soldering_bootloader.jpg)
 
-After the pads are shorted, connect the board to PC via USB-to-TTL, as before, and run PuTTY. When you connect `5V` power to the board, you should see repeating `BOOTME` messages on the terminal.
+After the pads are shorted, connect the board to PC via USB-to-TTL, as before,
+and run PuTTY. When you connect `5V` power to the board, you should see
+repeating `BOOTME` messages on the terminal.
 
-If you don't see them, something is wrong and you need to fix your setup. Find a way to test whether your USB-to-TTL works, check if all your connections look good and verify shorts with a multimeter. If everything seem OK and there is still no `BOOTME`, then your Interface Board probably is physically damaged - either power supply, or the chip itself, is fried. This can only be fixed by a technician using component level repair.
+If you don't see them, something is wrong and you need to fix your setup.
+Find a way to test whether your USB-to-TTL works, check if all your connections
+look good and verify shorts with a multimeter. If everything seem OK and there
+is still no `BOOTME`, then your Interface Board probably is physically damaged -
+either power supply, or the chip itself, is fried. This can only be fixed by a
+technician using component level repair.
 
-But usually you will be able to get `BOOTME` to show. And that means the chip is now waiting for commands from PC. Since we don't know how to type the commands by hand, we will use a tool which will do that for us - `sfh_DM36x.exe`.
+But usually you will be able to get `BOOTME` to show. And that means the chip
+is now waiting for commands from PC. Since we don't know how to type the
+commands by hand, we will use a tool which will do that for us - `sfh_DM36x.exe`.
 
-Copy `sfh_DM36x.exe`, `u-boot_prop.img` and `ubl1_prop.img` to a directory with short path, for example `C:\tmp` on Windows. Open [URL='https://en.wikipedia.org/wiki/Shell_(computing)']shell window[/URL] in that folder. Close PuTTY. Execute the command below in the shell:
+Copy `sfh_DM36x.exe`, `u-boot_prop.img` and `ubl1_prop.img` to a directory
+with short path, for example `C:\tmp` on Windows. Open
+[shell window](https://en.wikipedia.org/wiki/Shell_(computing))
+in that folder. Close PuTTY. Execute the command below in the shell:
 
 ```
 sfh_DM36x -nandflash -v -p "COM4" ubl1_prop.img u-boot_prop.img
@@ -586,9 +598,17 @@ to verify whether the whole boot succeeds.
 
 ## Re-flashing kernel
 
-So either your primary or recovery kernel got damaged, and you want to re-flash it. Since you have a working bootloader, we can use it to do the flashing. Bootloaders usually have a simplistic [URL='https://en.wikipedia.org/wiki/Shell_(computing)']shell[/URL] which allows executing some basic commands without operating system. U-boot is no exception.
+So either your primary or recovery kernel got damaged, and you want to
+re-flash it. Since you have a working bootloader, we can use it to do
+the flashing. Bootloaders usually have a simplistic
+[shell](https://en.wikipedia.org/wiki/Shell_(computing))
+which allows executing some basic commands without operating system.
+U-boot is no exception.
 
-You've probably already noticed that after you connect the 5V power to your board with ExtraPuTTY connected, the first thing you see is `Press ESC to abort autoboot`. Do that - press `ESC`. You need to be fast. Instead of trying to boot kernel, U-boot will then drop to its shell:
+You've probably already noticed that after you connect the 5V power to your
+board with ExtraPuTTY connected, the first thing you see is
+`Press ESC to abort autoboot`. Do that - press `ESC`. You need to be fast.
+Instead of trying to boot kernel, U-boot will then drop to its shell:
 
 
 ```
@@ -596,9 +616,12 @@ Press ESC to abort autoboot in 1 seconds
 Dji-Pro #
 ```
 
-If you pressed `ESC` more than once, you may want to remove the additional stokes from buffer by just pressing `Enter`.
+If you pressed `ESC` more than once, you may want to remove the additional
+stokes from buffer by just pressing `Enter`.
 
-Now, we need a way to transfer our kernel file to the board. For that, we will use part of the RAM connected to the chip. We will first transfer the kernel to RAM, and from there, write it to NAND.
+Now, we need a way to transfer our kernel file to the board. For that, we will
+use part of the RAM connected to the chip. We will first transfer the kernel
+to RAM, and from there, write it to NAND.
 
 Let's select RAM address `0x80008000`. First, we need to clean it from garbage data:
 
