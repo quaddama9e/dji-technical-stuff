@@ -202,7 +202,7 @@ This is what we expect from DM36x if bootloader is able to execute. You now
 need to analyze the text to figure out if everything boots properly, and if
 not - at which part it stops.
 
-Go to "[[Finding issues in logs from terminal]]"
+Go to "[Finding issues in logs from terminal](#finding-issues-in-logs-from-terminal)"
 chapter after you finish this one.
 
 After log are captured, you can disconnect the 5V power. In any of the cases
@@ -275,7 +275,7 @@ The place where question marks are will contain offset from which the kernel
 is tried; we're not interested in these yet. As long as a line like above
 exists in logs, bootloader is working correctly.
 If there's no such line, then you need to re-flash bootloader. Go to 
-"[[#Re-flashing bootloader]]" chapter below.
+"[Re-flashing bootloader](re-flashing-bootloader)" chapter below.
 
 For reference, here are all the messages a bootloader has shown on a specific,
 fully working board:
@@ -399,7 +399,8 @@ the last line printed is one of below:
 [    ?.??????] ksocket init
 ```
 
-In any of above cases, go to "[[Re-flashing encrypted partition]]" chapter below.
+In any of above cases, go to "[Re-flashing encrypted partition](#re-flashing-encrypted-partition)"
+chapter below, after you finish this one.
 
 ### 4. Root filesystem issues
 
@@ -432,7 +433,7 @@ Then your root filesystem is probably damaged. The booting in such case will usu
 ```
 
 But sometimes it will continue to spew hundreds of `UBI error` instead.
-Go to "[[Re-flashing root filesystem]]"
+Go to "[Re-flashing root filesystem](re-flashing-root-filesystem)"
 chapter after yiu finish this one, if any of this happens.
 
 ### 5. When all is good
@@ -462,27 +463,47 @@ the described cases - you will have to ask someone proficient with Linux
 for help.
 
 Before jumping to the chapter which described your issue, be sure to read
-"[[Downloading images and tools]]" below to get all the things you need
+"[Downloading images and tools](downloading-images-and-tools)" below to get all the things you need
 to re-flash.
 
 ## Downloading images and tools
 
-In case you'll be be flashing bootloader, you will need Serial Flasher Host Program from Texas Instruments.
-Original releases of this tool are at [URL='http://arago-project.org/files/releases/']Arago Project Releases[/URL]. They were linked to at, now defuc, [URL='https://web.archive.org/web/20100525171208/http://processors.wiki.ti.com/index.php/DaVinci_GIT_Linux_Kernel_Releases']DaVinci GIT Linux Kernel Releases page[/URL]. The latest release which still supports the DM36x line is `davinci-psp_03.01.01.39`. Inside, there is `board-utils-davinci.tar.gz` which contain the file you seek - `sfh_DM36x.exe`.
+In case you'll be be flashing bootloader, you will need Serial Flasher Host
+Program from Texas Instruments.
+Original releases of this tool are at [Arago Project Releases](http://arago-project.org/files/releases/).
+They were linked to at, now defuc,
+[DaVinci GIT Linux Kernel Releases page](https://web.archive.org/web/20100525171208/http://processors.wiki.ti.com/index.php/DaVinci_GIT_Linux_Kernel_Releases).
+The latest release which still supports the DM36x line is
+`davinci-psp_03.01.01.39`. Inside, there is `board-utils-davinci.tar.gz`
+which contain the file you seek - `sfh_DM36x.exe`.
 
-You will also need the images to flash. They are listed on [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Firmware-m1300#structure']the wiki page with structure of DaVinci firmware[/URL]; let's list them directly here:
+You will also need the images to flash. They are listed on
+[the wiki page with structure of DaVinci firmware](https://github.com/o-gs/dji-firmware-tools/wiki/Firmware-m1300#structure);
+let's list them directly here:
+
 * `ubl?.img` - stores U-Boot init code; first code which is being loaded while the board starts
+
 * `u-boot.img` - U-Boot main (application) part; contains most of the bootloader
+
 * `uImage` - the Primary Linux Kernel, normally used for booting
+
 * `uImage_recovery` - the Linux Kernel which is used when primary kernel gets corrupted
+
 * `dm365_secret.bin` - Encrypted partition for ATSHA204 initialization
+
 * `ubifs-partition.ubi` - Linux Root Filesystem, using UbiFS
 
-These are all the files you might need (though usually only one specific partition gets corrupted, so you only need one for your fix).
+These are all the files you might need (though usually only one specific
+partition gets corrupted, so you only need one for your fix).
 
 Where to get them:
 
-* `ubl?.img`, `u-boot.img` and `uImage` are included in every firmware update, and can be extracted from there. I already did that and you can download them in this archive: [ATTACH]111454[/ATTACH]. There are files for different firmware versions inside; use the one closest to the version you have on your RC; or just latest one, if you're unsure. Despite the file name, those files are proper for both GL300 and GL658 remotes.
+* `ubl?.img`, `u-boot.img` and `uImage` are included in every firmware update,
+  and can be extracted from there. I already did that and you can download them
+  [in this archive](https://phantompilots.com/attachments/gl300_dm36x_extracted_firmwares-zip.111454/).
+  There are files for different firmware versions inside; use the one closest
+  to the version you have on your RC; or just latest one, if you're unsure.
+  Despite the file name, those files are proper for both GL300 and GL658 remotes.
 
 * `uImage_recovery` can be downloaded from
   [the OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-kernel),
@@ -505,7 +526,7 @@ programming mode. This will make the chip ignore content of NAND memory,
 and instead wait for commands on serial interface. To enter serial programming
 mode, solder the Boot Select service pad `BTSEL` to `3.3V` pad.
 
-[ATTACH type="full" alt="flashing_dm36x_usb2ttl_soldering_bootloader.jpg"]111460[/ATTACH]
+![GL300 Interface board with BTSEL test pad pulled up](pictures/flashing_dm36x_usb2ttl_soldering_bootloader.jpg)
 
 After the pads are shorted, connect the board to PC via USB-to-TTL, as before, and run PuTTY. When you connect `5V` power to the board, you should see repeating `BOOTME` messages on the terminal.
 
@@ -519,11 +540,18 @@ Copy `sfh_DM36x.exe`, `u-boot_prop.img` and `ubl1_prop.img` to a directory with 
 sfh_DM36x -nandflash -v -p "COM4" ubl1_prop.img u-boot_prop.img
 ```
 
-The tool will show you messages sent by the board in lines starting with `Target:`. You've seen the initial message in PuTTY, so you should have already figured out you should see `Target: BOOTME` first. Then the tool will start talking to the board, and you will see a series of various messages.
+The tool will show you messages sent by the board in lines starting with
+`Target:`. You've seen the initial message in PuTTY, so you should have
+already figured out you should see `Target: BOOTME` first. Then the tool will
+start talking to the board, and you will see a series of various messages.
 
-For a complete log, see [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-u-boot-by-serial-port']u-boot flashing instructions at OGs Wiki[/URL].
+For a complete log, see
+[u-boot flashing instructions at OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-u-boot-by-serial-port).
 
-Sometimes the tool starts listening at wrong place and isn't able to understand the first message, which prevents it from moving forward. If that happens, just stop its execution with [I]Ctrl+C[/I] and then re-run the exact same command again.
+Sometimes the tool starts listening at wrong place and isn't able to understand
+the first message, which prevents it from moving forward. If that happens, just
+stop its execution with [I]Ctrl+C[/I] and then re-run the exact same command
+again.
 
 If everything went well, the final message will be:
 
@@ -535,17 +563,24 @@ If instead you see an error:
 
 1. Make sure you've typed correct port
 
-2. Make sure the path to execution folder is short, and all files have privileges to be read by everyone
+2. Make sure the path to execution folder is short, and all files have
+  privileges to be read by everyone
 
 3. Make sure your 5V power provides enough amperage for the board
 
-4. Make sure cables connecting serial interface are short and good quality, and nothing near them generates interference
+4. Make sure cables connecting serial interface are short and good quality,
+  and nothing near them generates interference
 
-5. Read the error message carefully and draw conclusions from it; you may try googling it as well
+5. Read the error message carefully and draw conclusions from it; you may
+  try googling it as well
 
-It is possible that the NAND chip is completely damaged and just won't accept programming, but it is a rare case. Usually errors are caused by not following the instructions exactly.
+It is possible that the NAND chip is completely damaged and just won't accept
+  programming, but it is a rare case. Usually errors are caused by not
+  following the instructions exactly.
 
-After bootloader is re-flashed, disconnect the `BTSEL` pad and get back to chapter "Finding issues in logs from terminal" to verify whether the whole boot succeeds.
+After bootloader is re-flashed, disconnect the `BTSEL` pad and get back to
+chapter "[Finding issues in logs from terminal](#finding-issues-in-logs-from-terminal)"
+to verify whether the whole boot succeeds.
 
 <u>Remember to unsolder the pad, otherwise you will continue seeing `BOOTME` only!</u>
 
@@ -577,8 +612,11 @@ Now, we can transfer the kernel there. Command for initiating the transfer is:
 loady 0x80008000 115200
 ```
 
-The u-boot will answer with `Ready for binary (ymodem) download` message. Now, we have to use menus of ExtraPuTTY; click `File Transfer -> Ymodem -> Send` and select the file.
-[ATTACH type="full" alt="flashing_dm36x_windows_kernel_transfer.png"]111455[/ATTACH]
+The u-boot will answer with `Ready for binary (ymodem) download` message.
+Now, we have to use menus of ExtraPuTTY; click `File Transfer -> Ymodem -> Send`
+and select the file.
+
+![Selecting Ymodem option in PuTTY to transfer kernel](pictures/flashing_dm36x_windows_kernel_transfer.png)
 
 The transfer shouldn't last more than 15 minutes. After it finishes, summary will de displayed, ending with:
 
@@ -587,11 +625,17 @@ The transfer shouldn't last more than 15 minutes. After it finishes, summary wil
 Dji-Pro #
 ```
 
-If there is a failure information instead, retry the transfer. If issues continue, use shorter and better quality wires between the board and USB-to-TTL device.
+If there is a failure information instead, retry the transfer.
+If issues continue, use shorter and better quality wires between
+the board and USB-to-TTL device.
 
-After the transfer succeeds, it is time to write the new kernel to NAND array. Such arrays need to be erased before writing. Then you can save the data from RAM into it.
+After the transfer succeeds, it is time to write the new kernel to NAND array.
+Such arrays need to be erased before writing. Then you can save the data from
+RAM into it.
 
-Note that the commands below modify content of the NAND according to parameters. Do not make a mistake when copying them, or you will damage the NAND programming even more!
+Note that the commands below modify content of the NAND according to
+parameters. Do not make a mistake when copying them, or you will damage
+the NAND programming even more!
 
 If you're writing Primary Kernel, use the commands:
 
@@ -607,13 +651,16 @@ nand erase 0x0900000 0x460000
 nand write 0x80008000 0x0900000 0x460000
 ```
 
-Remember that if you reboot the board, your kernel is no longer in RAM - so you must repeat the whole transfer, not only NAND write commands.
+Remember that if you reboot the board, your kernel is no longer in RAM - so
+you must repeat the whole transfer, not only NAND write commands.
 
-If the NAND Write fails, make sure your board is powered with high enough amperage, and re-try a few times. The NAND is unusable only if writing both Primary and Recovery kernel fails - you really only need one.
+If the NAND Write fails, make sure your board is powered with high enough
+amperage, and re-try a few times. The NAND is unusable only if writing both
+Primary and Recovery kernel fails - you really only need one.
 
 After the kernel is re-flashed, reboot the board and get back to chapter
-"[[#Finding issues in logs from terminal]]" to verify whether the whole boot
-succeeds.
+"[Finding issues in logs from terminal](#finding-issues-in-logs-from-terminal)"
+to verify whether the whole boot succeeds.
 
 ## Re-flashing encrypted partition
 
