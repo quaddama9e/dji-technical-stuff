@@ -1,3 +1,5 @@
+# Fixing flash in DM365 chip within Phantom 3 Pro gimbal
+
 Here is a success story I wanted to share.
 
 I had a Phantom 3 Pro gimbal which didn't allowed me to see the FPV feed. Photos and movies were recorded on sd-card, there was just no live video - only grey background - in Dji Go.
