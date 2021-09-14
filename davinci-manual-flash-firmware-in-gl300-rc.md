@@ -1,6 +1,6 @@
 # Fixing flash programming in DM365 chip within GL300 remote controller
 
-[SIZE=6]Preamble[/SIZE]
+## Preamble
 
 Here you will find not only instructions to blindly follow, but an explanation of what you're really doing. Fixing is also preceded by diagnosis - this is how all repairs should look like.
 
@@ -8,15 +8,15 @@ Electronics is not black magic, and it is not fixed by rituals. Some people are 
 
 I hope this guide to give readers understanding of what they're doing. Knowledge acquired here can be then used to fix different boards and devices. All digital devices are very similar in how they work.
 
-This guide was made with help from [USER=119969]@oemgpsnav[/USER]. It is also a result of previous cooperation with [URL='https://github.com/mefistotelis']Mefistotelis from the OGs group[/URL]. The [URL='https://github.com/o-gs/dji-firmware-tools/wiki']OGs wiki[/URL] is referenced heavily in this article and was the primary source of information for it (I did contributed to that wiki a bit as well).
+This guide was made with help from [USER=119969]@oemgpsnav[/USER]. It is also a result of previous cooperation with [Mefistotelis from the OGs group](https://github.com/mefistotelis). The [OGs wiki](https://github.com/o-gs/dji-firmware-tools/wiki) is referenced heavily in this article and was the primary source of information for it (I did contributed to that wiki a bit as well).
 
-[SIZE=6]Problem statement[/SIZE]
+## Problem statement
 
 This instruction concerns the following DJI Remote Controllers:
-- Phantom 3 Pro/Advanced, the first release version, GL300a (the "a" at end is important)
-- Phantom 3 Pro/Advanced, any version if you have HDMI output on your RC (HMDI output board in an upgrade compatible with all GL300 RCs)
-- Phantom 4 Standard, if you have HDMI output on your RC (I don't really know if it applies to other versions on Phantom 4)
-- Inspire 1 RC (GL658A)
+* Phantom 3 Pro/Advanced, the first release version, GL300a (the "a" at end is important)
+* Phantom 3 Pro/Advanced, any version if you have HDMI output on your RC (HMDI output board in an upgrade compatible with all GL300 RCs)
+* Phantom 4 Standard, if you have HDMI output on your RC (I don't really know if it applies to other versions on Phantom 4)
+* Inspire 1 RC (GL658A)
 
 The instruction shows how to diagnose and solve the following issue:
 After connecting Mobile Device to the drone via USB-to-microUSB cable, the mobile device does not react on the connection. Mobile device does not find/recognize the RC.
@@ -26,7 +26,7 @@ We will assume the issue was verified to be caused by RC (by either trying anoth
 [I]If you need to diagnose the cause of your issue, do not just assume it's the same as described here; to through the diagnosis graph to find your cause:
 [URL='https://phantompilots.com/threads/fix-no-video-feed-black-screen-no-image-transmission-no-fpv-on-ph3-pro.133487/']Fix no video feed / black screen / no image transmission / no FPV on Ph3 Pro[/URL][/I]
 
-[SIZE=6]Preparations[/SIZE]
+## Preparations
 
 First, remove the Interface Board from the RC. There is an instruction for that from OEM:
 [URL='https://www.youtube.com/watch?v=fBt7FiH0mII']How to install HDMI Output Module on Phantom 3 Remote Controller[/URL]
@@ -34,47 +34,47 @@ First, remove the Interface Board from the RC. There is an instruction for that 
 Check the board from physical damage. You can use a multimeter to check whether USB output pins are connected, and no capacitors are shorted. If there are no indicators of physical damage the issue is probably software-related. To be sure, we need to check whether the chip which controls the board boots properly.
 
 To further diagnose and fix the board, you will need:
-- a temperature controlled soldering iron, and enough skill to solder wires to test points on the board
-- a USB-to-TTL converter (also known by brand name - FTDI), which supports 3.3V logic (note that if device claims it's "universal" but there's no jumper to switch to 3.3V, then it is crap and will not work)
-- ability to use that converter from your PC (if you know what command line tools are or what a text terminal is, you should be ok)
-- Good amperage USB output (ie. from a USB hub), or just additional 5V power supply; The USB standard of 500mA is the minimum power the board needs, and any drop below that will cause the chip to fail flashing. So it is better to use USB with high current rating (ie. 1A charging outputs).
+* a temperature controlled soldering iron, and enough skill to solder wires to test points on the board
+* a USB-to-TTL converter (also known by brand name - FTDI), which supports 3.3V logic (note that if device claims it's "universal" but there's no jumper to switch to 3.3V, then it is crap and will not work)
+* ability to use that converter from your PC (if you know what command line tools are or what a text terminal is, you should be ok)
+* Good amperage USB output (ie. from a USB hub), or just additional 5V power supply; The USB standard of 500mA is the minimum power the board needs, and any drop below that will cause the chip to fail flashing. So it is better to use USB with high current rating (ie. 1A charging outputs).
 
 The board consists of Texas Instruments DM36x Media Controller chip, and additional chips needed for it to work: RAM chip, NAND chip and voltage regulators. To get more info about this board, look at [URL='https://github.com/o-gs/dji-firmware-tools/wiki/GL300-Interface-board']GL300 Interface board description by OGs[/URL]. The DM36x is a processor which runs Linux as operating system. We need to hook to it and check whether Linux boots properly.
 
-[SIZE=6]Soldering to debug serial interface[/SIZE]
+## Soldering to debug serial interface
 
 We have our board out, and USB-to-TTL converter ready. Let's solder cables to the test pads. What is a test pad? Those are the small copper dots on the Printed Circuit Board - they are used during manufacturing to test whether the board works as intended. The pads are named with white paint on most boards; if your board doesn't have the white names, find the test pads location on photos in "GL300 Interface board description" linked above. It is best to solder detachable wires to the board; most USB-to-TTLs have pin outputs on which you slide a cable, so this comes with the package.
 
 To the soldering:
-- At back of the Interface Board, you will see test pads marked "[ICODE]GND[/ICODE]" and "[ICODE]VCC_5V[/ICODE]", close to each other. Solder wires to these (you should be able to solder to any GND pad instead; but the one closest to VCC is the safest choice). Make sure you will [U]be able to easily connect/disconnect the 5V power supply[/U]. You will want to be able to reset your power while other pads are all connected.
-- Also at back of the Interface Board, you will see test pads marked "[ICODE]UART0_RX[/ICODE]" and "[ICODE]UART0_TX[/ICODE]" (or "[ICODE]368_RX[/ICODE]" and "[ICODE]368_TX[/ICODE]", on some boards). Solder wires to these as well.
+* At back of the Interface Board, you will see test pads marked "`GND`" and "`VCC_5V`", close to each other. Solder wires to these (you should be able to solder to any GND pad instead; but the one closest to VCC is the safest choice). Make sure you will [U]be able to easily connect/disconnect the 5V power supply[/U]. You will want to be able to reset your power while other pads are all connected.
+* Also at back of the Interface Board, you will see test pads marked "`UART0_RX`" and "`UART0_TX`" (or "`368_RX`" and "`368_TX`", on some boards). Solder wires to these as well.
 
 Now, connect everything:
-- [ICODE]GND[/ICODE] cable to GND pin of your USB-to-TTL; if you're using external power supply, connect GND to there as well (something may burn if both grounds are not floating; but today we mostly have floating grounds in devices, so it should be ok)
-- [ICODE]VCC_5V[/ICODE] cable [U]do not connect yet[/U] - you will be connecting it to 5V power supply, either from USB or external supply)
-- [ICODE]UART0_RX[/ICODE] cable to the TX pin of your USB-to-TTL, and [ICODE]UART0_TX[/ICODE] cable to the RX pin. Yes, usually we connect RX-TX and TX-RX (R is for Receive and T is for Transmit; if something is transmitting, we want the other side to receive)
-- plug your USB-to-TTL converter into a port from your PC; make sure to switch it to 3.3V logic, if it has a jumper for that
+* `GND` cable to GND pin of your USB-to-TTL; if you're using external power supply, connect GND to there as well (something may burn if both grounds are not floating; but today we mostly have floating grounds in devices, so it should be ok)
+* `VCC_5V` cable [U]do not connect yet[/U] - you will be connecting it to 5V power supply, either from USB or external supply)
+* `UART0_RX` cable to the TX pin of your USB-to-TTL, and `UART0_TX` cable to the RX pin. Yes, usually we connect RX-TX and TX-RX (R is for Receive and T is for Transmit; if something is transmitting, we want the other side to receive)
+* plug your USB-to-TTL converter into a port from your PC; make sure to switch it to 3.3V logic, if it has a jumper for that
 
 [ATTACH type="full" alt="flashing_dm36x_usb2ttl_soldering.jpg"]111458[/ATTACH]
 
 You may wonder why we use 3.3V logic, even though we're supplying the board with 5V power. This is because the board is really supplying 3.3V to all the chips - it converts the 5V at input to 3.3V before sending it anywhere further.
 
-After you've connected the USB-to-TTL to your PC, it should've installed the new device. In case of Windows you should've heard a sound queue and the device appearing in [I]"Device Manager"[/I] under [I]"Ports"[/I], in case of Linux - a device appearing as "[ICODE]/dev/ttyUSB*[/ICODE]" and messages about its installation being visible in "[ICODE]dmesg[/ICODE]" output.
+After you've connected the USB-to-TTL to your PC, it should've installed the new device. In case of Windows you should've heard a sound queue and the device appearing in [I]"Device Manager"[/I] under [I]"Ports"[/I], in case of Linux - a device appearing as "`/dev/ttyUSB*`" and messages about its installation being visible in "`dmesg`" output.
 [ATTACH type="full" alt="flashing_dm36x_windows_usb2ttl_ports2.png"]111456[/ATTACH]
 
-[SIZE=6]Connecting to the debug serial interface[/SIZE]
+## Connecting to the debug serial interface
 
 Connect to the USB-to-TTL device using a terminal application. For windows, use [URL='http://www.extraputty.com/']ExtraPuTTY[/URL]; for Linux - either [URL='https://linux.die.net/man/1/minicom']minicom[/URL] or [URL='https://linux.die.net/man/8/picocom']picocom[/URL].
 
 [ATTACH type="full" alt="flashing_dm36x_windows_usb2ttl_putty2.png"]111457[/ATTACH]
 
-Set transmission configuration to 115200 8N1 (baud rate: 115200, data bits: 8, parity: None, stop bits: 1) and connect to the proper serial device (the one which appeared in [I]"Device Manager"[/I] or "[ICODE]dmesg[/ICODE]"). You should see an empty window, with cursor only.
+Set transmission configuration to 115200 8N1 (baud rate: 115200, data bits: 8, parity: None, stop bits: 1) and connect to the proper serial device (the one which appeared in [I]"Device Manager"[/I] or "`dmesg`"). You should see an empty window, with cursor only.
 
 [ATTACH type="full" alt="flashing_dm36x_usb2ttl_putty_empty2.png"]111459[/ATTACH]
 
 Everything is ready for a first boot.
 
-[SIZE=6]Booting the board with debug interface connected[/SIZE]
+## Booting the board with debug interface connected
 
 Connect the 5V power pin to start booting the board. What you see on the terminal screen determines the further steps.
 
@@ -102,7 +102,7 @@ Possible cases:
 
 After log are captured, you can disconnect the 5V power. In any of the cases above, you may want to read "Overview of the boot process" chapter below to get an understanding of the whole thing.
 
-[SIZE=6]Overview of the boot process[/SIZE]
+## Overview of the boot process
 
 Booting of the DaVinci Linux on DM36x consists of the following parts:
 
@@ -116,7 +116,7 @@ Booting of the DaVinci Linux on DM36x consists of the following parts:
 
 [SIZE=4][B]2. Kernel starts, initializes drivers for available hardware components[/B][/SIZE]
 
-   The messages from kernel are easy to spot, as they're preceded by time marking in square brackets, ie. [ICODE][ 0.123456][/ICODE].
+   The messages from kernel are easy to spot, as they're preceded by time marking in square brackets, ie. `[ 0.123456]`.
 
 [SIZE=4][B]3. Kernel mounts root filesystem[/B][/SIZE]
 
@@ -125,21 +125,26 @@ Booting of the DaVinci Linux on DM36x consists of the following parts:
 
 [SIZE=4][B]4. Application which decodes and routes data and video between the RC and Mobile Device starts[/B][/SIZE]
 
-   A few last lines of the booting process is just loading the application which connects to [URL='https://www.cypress.com/part/cy7c68013a-128axc']Cypress 68013[/URL] chip within the RC, and acts as USB Master for the Mobile Device. At this point, user can type commands to the Linux shell. The [ICODE]stop[/ICODE] command for example will terminate the application so that it stops spewing messages.
+   A few last lines of the booting process is just loading the application which connects to [URL='https://www.cypress.com/part/cy7c68013a-128axc']Cypress 68013[/URL] chip within the RC, and acts as USB Master for the Mobile Device. At this point, user can type commands to the Linux shell. The `stop` command for example will terminate the application so that it stops spewing messages.
 
-[SIZE=6]Finding issues in logs from terminal[/SIZE]
+## Finding issues in logs from terminal
 
 [SIZE=4][B]1. Bootloader issues[/B][/SIZE]
 
 The first question we need to ask is whether U-Boot is working properly. This is easy to check, as the main purpose of bootloader is to load kernel - so if it is trying to load kernel, it is working.
 And how do we know whether it tries to load kernel? Easy - if it does, it will print the line:
-[CODE]Loading from nand0, offset 0x??????[/CODE]
+
+```
+Loading from nand0, offset 0x??????
+```
+
 The place where question marks are will contain offset from which the kernel is tried; we're not interested in these yet. As long as a line like above exists in logs, bootloader is working correctly.
 If there's no such line, then you need to re-flash bootloader. Go to "Re-flashing bootloader" chapter below.
 
 For reference, here are all the messages a bootloader has shown on a specific, fully working board:
 
-[CODE]DM36x initialization passed!
+```
+DM36x initialization passed!
 UBL Product Vesion : DJI-486M-UBL-1.0-rc0(2015-10-30)
 Dji UBL Version: 1.51(Nov  2 2015 - 15:46:28)
 Booting Catalog Boot Loader
@@ -181,22 +186,27 @@ Loading from nand0, offset 0x4a0000
    Loading Kernel Image ... OK
 OK
 
-Starting kernel ...[/CODE]
+Starting kernel ...
+```
 
-Note that [ICODE]Bad block table found[/ICODE] in the log above doesn't mean anything wrong. It just shows the place where tables which store bad blocks are located.
+Note that `Bad block table found` in the log above doesn't mean anything wrong. It just shows the place where tables which store bad blocks are located.
 
 [SIZE=4][B]2. Kernel issues[/B][/SIZE]
 
-So the bootlader is trying to load kernel. Now let's make sure it is succeeding in the loading. If it does, then the bootloader work should end with [ICODE]Starting kernel ...[/ICODE] as above. But wait! There are two copies of the kernel stored, and only one of these is proper, working kernel. The other is a recovery kernel, used to make it easier to fix stuff in case primary kernel dies. This recovery kernel can't correctly connect to the Mobile Device.
+So the bootlader is trying to load kernel. Now let's make sure it is succeeding in the loading. If it does, then the bootloader work should end with `Starting kernel ...` as above. But wait! There are two copies of the kernel stored, and only one of these is proper, working kernel. The other is a recovery kernel, used to make it easier to fix stuff in case primary kernel dies. This recovery kernel can't correctly connect to the Mobile Device.
 
 To be sure a primary kernel is being loaded, make sure you don't see the following lines in your logs:
-[CODE]ERROR: can't get kernel image![/CODE]
 
-Primary kernel resides at offset [ICODE]0x4a0000[/ICODE] in the NAND memory, and recovery kernel sits at [ICODE]0x900000[/ICODE]. It is possible to have both kernel copies damaged - in that case, you will see [ICODE]can't get kernel image![/ICODE] two times, and booting will stop. If at least one kernel is valid, the bootloader will use it and continue booting.
+```
+ERROR: can't get kernel image!
+```
+
+Primary kernel resides at offset `0x4a0000` in the NAND memory, and recovery kernel sits at `0x900000`. It is possible to have both kernel copies damaged - in that case, you will see `can't get kernel image!` two times, and booting will stop. If at least one kernel is valid, the bootloader will use it and continue booting.
 
 For reference, here are the messages a bootloader shows for a board which has both copies of the kernel damaged:
 
-[CODE]Loading from nand0, offset 0x4a0000
+```
+Loading from nand0, offset 0x4a0000
 ** Unknown image type
 Wrong Image Format for bootm command
 ERROR: can't get kernel image!
@@ -205,7 +215,8 @@ Loading from nand0, offset 0x900000
 ** Unknown image type
 Wrong Image Format for bootm command
 ERROR: can't get kernel image!
-Dji-Pro #[/CODE]
+Dji-Pro #
+```
 
 If any of the kernel copies is damaged, go to "Reflashing kernel" chapter below. If primary kernel starts booting properly, let's look further into the logs.
 
@@ -213,101 +224,125 @@ If any of the kernel copies is damaged, go to "Reflashing kernel" chapter below.
 
 The next possible point of failure is encryption initialization. There is a small encrypted partition within the NAND memory, and it is required for the encryption to initialize.
 If that area is damaged, booting will stop(freeze forever) around the message:
-[CODE][    ?.??????] encrypt device:atsha204 found[/CODE]
-Sometimes the message might also be [ICODE]encrypt device:at88 found[/ICODE]. Atmel AT88 is an older version of the ATSHA204 chip; GL300 remotes only use ATSHA204, but older drivers show both chips as AT88; it doesn't really matter which one is shown.
-What matters is - if the booting freeze at some point and no more messages are logged, and within the last 20 lines there's the [ICODE]encrypt device[/ICODE] message, then encrypted partition is probably damaged. Sometimes the freeze happens too fast for the line to print - in such case, the last line printed is one of below:
-[CODE][    ?.??????] NET: Registered protocol family 17
+
+```
+[    ?.??????] encrypt device:atsha204 found
+```
+
+Sometimes the message might also be `encrypt device:at88 found`. Atmel AT88 is an older version of the ATSHA204 chip; GL300 remotes only use ATSHA204, but older drivers show both chips as AT88; it doesn't really matter which one is shown.
+What matters is - if the booting freeze at some point and no more messages are logged, and within the last 20 lines there's the `encrypt device` message, then encrypted partition is probably damaged. Sometimes the freeze happens too fast for the line to print - in such case, the last line printed is one of below:
+
+```
+[    ?.??????] NET: Registered protocol family 17
 [    ?.??????] lib80211: common routines for IEEE802.11 drivers
-[    ?.??????] ksocket init[/CODE]
+[    ?.??????] ksocket init
+```
 
 In any of above cases, go to "Re-flashing encrypted partition" chapter below.
 
 [SIZE=4][B]4. Root filesystem issues[/B][/SIZE]
 
-The next important part of booting is mounting the root filesystem. This happens soon after NAND device initialization, started by [ICODE]NAND device[/ICODE] type announcement. It looks similar to lines below, though details may vary - DJI uses various NAND chips from several manufacturers:
-[CODE]
-[    0.570000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xf1 (Micron NAND 128MiB 3,3V 8-bit)
-[    0.580000] Creating 4 MTD partitions on "davinci_nand.0":[/CODE]
+The next important part of booting is mounting the root filesystem. This happens soon after NAND device initialization, started by `NAND device` type announcement. It looks similar to lines below, though details may vary - DJI uses various NAND chips from several manufacturers:
 
-If at some point after that message you see [ICODE]UBI error[/ICODE] like:
-[CODE]
-[    0.800000] UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB ???:2048, read 512 bytes[/CODE]
-Or no filesystem was recognized at all with [ICODE]No filesystem could mount root[/ICODE] message, like:
-[CODE]
-[    1.240000] No filesystem could mount root, tried:  cramfs vfat msdos[/CODE]
+```
+[    0.570000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xf1 (Micron NAND 128MiB 3,3V 8-bit)
+[    0.580000] Creating 4 MTD partitions on "davinci_nand.0":
+```
+
+If at some point after that message you see `UBI error` like:
+
+```
+[    0.800000] UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB ???:2048, read 512 bytes
+```
+
+Or no filesystem was recognized at all with `No filesystem could mount root` message, like:
+```
+[    1.240000] No filesystem could mount root, tried:  cramfs vfat msdos
+```
 
 Then your root filesystem is probably damaged. The booting in such case will usually end with messages:
-[CODE]
+
+```
 [    1.250000] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(1,0)
-[    1.260000] Rebooting in 1 seconds..[/CODE]
-But sometimes it will continue to spew hundreds of [ICODE]UBI error[/ICODE] instead.
+[    1.260000] Rebooting in 1 seconds..
+```
+
+But sometimes it will continue to spew hundreds of `UBI error` instead.
 Go to "Re-flashing root filesystem" chapter below if any of this happens.
 
 [SIZE=4][B]5. When all is good[/B][/SIZE]
 
 Now, we've discussed many issues, but what if the device booted properly and is working as intended? How to recognize that?
 Well in that case, the chip will continue to print messages after it's booted, at circa one second intervals. The messages may be:
-[CODE]
+
+```
 DummyRead68013 0.000000kb
-DummyRead68013 0.000000kb[/CODE]
+DummyRead68013 0.000000kb
+```
+
 or:
-[CODE]
+
+```
 read 68013  return size = 0
 read 68013  return size = 0
 read 68013  return size = 0
 read 68013  return size = 0
-0kbps [/CODE]
+0kbps
+```
 
 If the messages above are not shown, but what you see doesn't match any of the described cases - you will have to ask someone proficient with Linux for help.
 Before jumping to the chapter which described your issue, be sure to read "Downloading images and tools" below to get all the things you need to re-flash.
 
-[SIZE=6]Downloading images and tools[/SIZE]
+## Downloading images and tools
 
 In case you'll be be flashing bootloader, you will need Serial Flasher Host Program from Texas Instruments.
-Original releases of this tool are at [URL='http://arago-project.org/files/releases/']Arago Project Releases[/URL]. They were linked to at, now defuc, [URL='https://web.archive.org/web/20100525171208/http://processors.wiki.ti.com/index.php/DaVinci_GIT_Linux_Kernel_Releases']DaVinci GIT Linux Kernel Releases page[/URL]. The latest release which still supports the DM36x line is [ICODE]davinci-psp_03.01.01.39[/ICODE]. Inside, there is [ICODE]board-utils-davinci.tar.gz[/ICODE] which contain the file you seek - [ICODE]sfh_DM36x.exe[/ICODE].
+Original releases of this tool are at [URL='http://arago-project.org/files/releases/']Arago Project Releases[/URL]. They were linked to at, now defuc, [URL='https://web.archive.org/web/20100525171208/http://processors.wiki.ti.com/index.php/DaVinci_GIT_Linux_Kernel_Releases']DaVinci GIT Linux Kernel Releases page[/URL]. The latest release which still supports the DM36x line is `davinci-psp_03.01.01.39`. Inside, there is `board-utils-davinci.tar.gz` which contain the file you seek - `sfh_DM36x.exe`.
 
 You will also need the images to flash. They are listed on [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Firmware-m1300#structure']the wiki page with structure of DaVinci firmware[/URL]; let's list them directly here:
-- [ICODE]ubl?.img[/ICODE] - stores U-Boot init code; first code which is being loaded while the board starts
-- [ICODE]u-boot.img[/ICODE] - U-Boot main (application) part; contains most of the bootloader
-- [ICODE]uImage[/ICODE] - the Primary Linux Kernel, normally used for booting
-- [ICODE]uImage_recovery[/ICODE] - the Linux Kernel which is used when primary kernel gets corrupted
-- [ICODE]dm365_secret.bin[/ICODE] - Encrypted partition for ATSHA204 initialization
-- [ICODE]ubifs-partition.ubi[/ICODE] - Linux Root Filesystem, using UbiFS
+* `ubl?.img` - stores U-Boot init code; first code which is being loaded while the board starts
+* `u-boot.img` - U-Boot main (application) part; contains most of the bootloader
+* `uImage` - the Primary Linux Kernel, normally used for booting
+* `uImage_recovery` - the Linux Kernel which is used when primary kernel gets corrupted
+* `dm365_secret.bin` - Encrypted partition for ATSHA204 initialization
+* `ubifs-partition.ubi` - Linux Root Filesystem, using UbiFS
 
 These are all the files you might need (though usually only one specific partition gets corrupted, so you only need one for your fix).
 
 Where to get them:
-- [ICODE]ubl?.img[/ICODE], [ICODE]u-boot.img[/ICODE] and [ICODE]uImage[/ICODE] are included in every firmware update, and can be extracted from there. I already did that and you can download them in this archive: [ATTACH]111454[/ATTACH]. There are files for different firmware versions inside; use the one closest to the version you have on your RC; or just latest one, if you're unsure. Despite the file name, those files are proper for both GL300 and GL658 remotes.
-- [ICODE]uImage_recovery[/ICODE] can be downloaded from [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-kernel']the OGs Wiki[/URL], though I would advise to just use a copy of [ICODE]uImage[/ICODE] instead.
-- [ICODE]dm365_secret.bin[/ICODE] is really unique for every machine and can't be just downloaded; but if it prevents you from booting, it is damaged anyway; you can download a version which shouldn't prevent booting at [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-encrypted-partition']the OGs Wiki[/URL].
-- [ICODE]ubifs-partition.ubi[/ICODE] is a big partition, and most complicated one to fix; it also contains some machine-specific files, so don't reflash it unless it really is damaged; [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-root-filesystem']The OGs Wiki[/URL] has a link to it, too.
+* `ubl?.img`, `u-boot.img` and `uImage` are included in every firmware update, and can be extracted from there. I already did that and you can download them in this archive: [ATTACH]111454[/ATTACH]. There are files for different firmware versions inside; use the one closest to the version you have on your RC; or just latest one, if you're unsure. Despite the file name, those files are proper for both GL300 and GL658 remotes.
+* `uImage_recovery` can be downloaded from [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-kernel']the OGs Wiki[/URL], though I would advise to just use a copy of `uImage` instead.
+* `dm365_secret.bin` is really unique for every machine and can't be just downloaded; but if it prevents you from booting, it is damaged anyway; you can download a version which shouldn't prevent booting at [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-encrypted-partition']the OGs Wiki[/URL].
+* `ubifs-partition.ubi` is a big partition, and most complicated one to fix; it also contains some machine-specific files, so don't reflash it unless it really is damaged; [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-root-filesystem']The OGs Wiki[/URL] has a link to it, too.
 
-[SIZE=6]Re-flashing bootloader[/SIZE]
+## Re-flashing bootloader
 
-To re-flash bootloader, you first need to force the chip into serial programming mode. This will make the chip ignore content of NAND memory, and instead wait for commands on serial interface. To enter serial programming mode, solder the Boot Select service pad [ICODE]BTSEL[/ICODE] to [ICODE]3.3V[/ICODE] pad.
+To re-flash bootloader, you first need to force the chip into serial programming mode. This will make the chip ignore content of NAND memory, and instead wait for commands on serial interface. To enter serial programming mode, solder the Boot Select service pad `BTSEL` to `3.3V` pad.
 
 [ATTACH type="full" alt="flashing_dm36x_usb2ttl_soldering_bootloader.jpg"]111460[/ATTACH]
 
-After the pads are shorted, connect the board to PC via USB-to-TTL, as before, and run PuTTY. When you connect [ICODE]5V[/ICODE] power to the board, you should see repeating [ICODE]BOOTME[/ICODE] messages on the terminal.
+After the pads are shorted, connect the board to PC via USB-to-TTL, as before, and run PuTTY. When you connect `5V` power to the board, you should see repeating `BOOTME` messages on the terminal.
 
-If you don't see them, something is wrong and you need to fix your setup. Find a way to test whether your USB-to-TTL works, check if all your connections look good and verify shorts with a multimeter. If everything seem OK and there is still no [ICODE]BOOTME[/ICODE], then your Interface Board probably is physically damaged - either power supply, or the chip itself, is fried. This can only be fixed by a technician using component level repair.
+If you don't see them, something is wrong and you need to fix your setup. Find a way to test whether your USB-to-TTL works, check if all your connections look good and verify shorts with a multimeter. If everything seem OK and there is still no `BOOTME`, then your Interface Board probably is physically damaged - either power supply, or the chip itself, is fried. This can only be fixed by a technician using component level repair.
 
-But usually you will be able to get [ICODE]BOOTME[/ICODE] to show. And that means the chip is now waiting for commands from PC. Since we don't know how to type the commands by hand, we will use a tool which will do that for us - [ICODE]sfh_DM36x.exe[/ICODE].
+But usually you will be able to get `BOOTME` to show. And that means the chip is now waiting for commands from PC. Since we don't know how to type the commands by hand, we will use a tool which will do that for us - `sfh_DM36x.exe`.
 
-Copy [ICODE]sfh_DM36x.exe[/ICODE], [ICODE]u-boot_prop.img[/ICODE] and [ICODE]ubl1_prop.img[/ICODE] to a directory with short path, for example [ICODE]C:\tmp[/ICODE] on Windows. Open [URL='https://en.wikipedia.org/wiki/Shell_(computing)']shell window[/URL] in that folder. Close PuTTY. Execute the command below in the shell:
+Copy `sfh_DM36x.exe`, `u-boot_prop.img` and `ubl1_prop.img` to a directory with short path, for example `C:\tmp` on Windows. Open [URL='https://en.wikipedia.org/wiki/Shell_(computing)']shell window[/URL] in that folder. Close PuTTY. Execute the command below in the shell:
 
-[CODE]
-sfh_DM36x -nandflash -v -p "COM4" ubl1_prop.img u-boot_prop.img[/CODE]
+```
+sfh_DM36x -nandflash -v -p "COM4" ubl1_prop.img u-boot_prop.img
+```
 
-The tool will show you messages sent by the board in lines starting with [ICODE]Target:[/ICODE]. You've seen the initial message in PuTTY, so you should have already figured out you should see [ICODE]Target: BOOTME[/ICODE] first. Then the tool will start talking to the board, and you will see a series of various messages.
+The tool will show you messages sent by the board in lines starting with `Target:`. You've seen the initial message in PuTTY, so you should have already figured out you should see `Target: BOOTME` first. Then the tool will start talking to the board, and you will see a series of various messages.
 
 For a complete log, see [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-u-boot-by-serial-port']u-boot flashing instructions at OGs Wiki[/URL].
 
 Sometimes the tool starts listening at wrong place and isn't able to understand the first message, which prevents it from moving forward. If that happens, just stop its execution with [I]Ctrl+C[/I] and then re-run the exact same command again.
 
 If everything went well, the final message will be:
-[CODE]
-Operation completed successfully.[/CODE]
+
+```
+Operation completed successfully.
+```
 
 If instead you see an error:
 
@@ -323,41 +358,47 @@ If instead you see an error:
 
 It is possible that the NAND chip is completely damaged and just won't accept programming, but it is a rare case. Usually errors are caused by not following the instructions exactly.
 
-After bootloader is re-flashed, disconnect the [ICODE]BTSEL[/ICODE] pad and get back to chapter "Finding issues in logs from terminal" to verify whether the whole boot succeeds.
+After bootloader is re-flashed, disconnect the `BTSEL` pad and get back to chapter "Finding issues in logs from terminal" to verify whether the whole boot succeeds.
 
-[U]Remember to unsolder the pad, otherwise you will continue seeing [ICODE]BOOTME[/ICODE] only![/U]
+[U]Remember to unsolder the pad, otherwise you will continue seeing `BOOTME` only![/U]
 
-[SIZE=6]Re-flashing kernel[/SIZE]
+## Re-flashing kernel
 
 So either your primary or recovery kernel got damaged, and you want to re-flash it. Since you have a working bootloader, we can use it to do the flashing. Bootloaders usually have a simplistic [URL='https://en.wikipedia.org/wiki/Shell_(computing)']shell[/URL] which allows executing some basic commands without operating system. U-boot is no exception.
 
-You've probably already noticed that after you connect the 5V power to your board with ExtraPuTTY connected, the first thing you see is [ICODE]Press ESC to abort autoboot[/ICODE]. Do that - press [ICODE]ESC[/ICODE]. You need to be fast. Instead of trying to boot kernel, U-boot will then drop to its shell:
+You've probably already noticed that after you connect the 5V power to your board with ExtraPuTTY connected, the first thing you see is `Press ESC to abort autoboot`. Do that - press `ESC`. You need to be fast. Instead of trying to boot kernel, U-boot will then drop to its shell:
 
-[CODE]
+
+```
 Press ESC to abort autoboot in 1 seconds
-Dji-Pro #[/CODE]
+Dji-Pro #
+```
 
-If you pressed [ICODE]ESC[/ICODE] more than once, you may want to remove the additional stokes from buffer by just pressing [ICODE]Enter[/ICODE].
+If you pressed `ESC` more than once, you may want to remove the additional stokes from buffer by just pressing `Enter`.
 
 Now, we need a way to transfer our kernel file to the board. For that, we will use part of the RAM connected to the chip. We will first transfer the kernel to RAM, and from there, write it to NAND.
 
-Let's select RAM address [ICODE]0x80008000[/ICODE]. First, we need to clean it from garbage data:
+Let's select RAM address `0x80008000`. First, we need to clean it from garbage data:
 
-[CODE]
-mw.b 0x80008000 0xFF 0x460000[/CODE]
+```
+mw.b 0x80008000 0xFF 0x460000
+```
 
 Now, we can transfer the kernel there. Command for initiating the transfer is:
 
-[CODE]
-loady 0x80008000 115200[/CODE]
+```
+loady 0x80008000 115200
+```
 
-The u-boot will answer with [ICODE]Ready for binary (ymodem) download[/ICODE] message. Now, we have to use menus of ExtraPuTTY; click [ICODE]File Transfer -> Ymodem -> Send[/ICODE] and select the file.
+The u-boot will answer with `Ready for binary (ymodem) download` message. Now, we have to use menus of ExtraPuTTY; click `File Transfer -> Ymodem -> Send` and select the file.
 [ATTACH type="full" alt="flashing_dm36x_windows_kernel_transfer.png"]111455[/ATTACH]
 
 The transfer shouldn't last more than 15 minutes. After it finishes, summary will de displayed, ending with:
 
-[CODE]## Total Size      = 0x003e09c0 = 4065728 Bytes
-Dji-Pro #[/CODE]
+```
+## Total Size      = 0x003e09c0 = 4065728 Bytes
+Dji-Pro #
+```
 
 If there is a failure information instead, retry the transfer. If issues continue, use shorter and better quality wires between the board and USB-to-TTL device.
 
@@ -367,15 +408,17 @@ Note that the commands below modify content of the NAND according to parameters.
 
 If you're writing Primary Kernel, use the commands:
 
-[CODE]
+```
 nand erase 0x04a0000 0x460000
-nand write 0x80008000 0x04a0000 0x460000[/CODE]
+nand write 0x80008000 0x04a0000 0x460000
+```
 
 If you're writing Recovery Kernel as well, follow that with these commands:
 
-[CODE]
+```
 nand erase 0x0900000 0x460000
-nand write 0x80008000 0x0900000 0x460000[/CODE]
+nand write 0x80008000 0x0900000 0x460000
+```
 
 Remember that if you reboot the board, your kernel is no longer in RAM - so you must repeat the whole transfer, not only NAND write commands.
 
@@ -383,14 +426,14 @@ If the NAND Write fails, make sure your board is powered with high enough ampera
 
 After the kernel is re-flashed, reboot the board and get back to chapter "Finding issues in logs from terminal" to verify whether the whole boot succeeds.
 
-[SIZE=6]Re-flashing encrypted partition[/SIZE]
+## Re-flashing encrypted partition
 
 The need to re-flash the encrypted partition is a rare case and I won't be describing it in detail. For instructions, see [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-encrypted-partition']encrypted partition flashing instructions at OGs Wiki[/URL].
 
-[SIZE=6]Re-flashing root filesystem[/SIZE]
+## Re-flashing root filesystem
 
 Usually UbiFS can fix any errors within its structure, so I won't be describing re-flashing it in detail. For instructions, see [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-root-filesystem']root filesystem flashing instructions at OGs Wiki[/URL].
 
-[SIZE=6]The end[/SIZE]
+## The end
 
 That concludes the guide. Hopefully you have a working mobile phone link on your GL300 remote controller now.
