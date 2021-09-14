@@ -275,9 +275,10 @@ The place where question marks are will contain offset from which the kernel
 is tried; we're not interested in these yet. As long as a line like above
 exists in logs, bootloader is working correctly.
 If there's no such line, then you need to re-flash bootloader. Go to 
-"_Re-flashing bootloader_" chapter below.
+"[[#Re-flashing bootloader]]" chapter below.
 
-For reference, here are all the messages a bootloader has shown on a specific, fully working board:
+For reference, here are all the messages a bootloader has shown on a specific,
+fully working board:
 
 ```
 DM36x initialization passed!
@@ -367,7 +368,7 @@ ERROR: can't get kernel image!
 Dji-Pro #
 ```
 
-If any of the kernel copies is damaged, go to "[Reflashing kernel](#reflashing-kernel)"
+If any of the kernel copies is damaged, go to "[Re-flashing kernel](#re-flashing-kernel)"
 chapter below. If primary kernel starts booting properly, let's look into further
 log messages.
 
@@ -480,14 +481,29 @@ You will also need the images to flash. They are listed on [URL='https://github.
 These are all the files you might need (though usually only one specific partition gets corrupted, so you only need one for your fix).
 
 Where to get them:
+
 * `ubl?.img`, `u-boot.img` and `uImage` are included in every firmware update, and can be extracted from there. I already did that and you can download them in this archive: [ATTACH]111454[/ATTACH]. There are files for different firmware versions inside; use the one closest to the version you have on your RC; or just latest one, if you're unsure. Despite the file name, those files are proper for both GL300 and GL658 remotes.
-* `uImage_recovery` can be downloaded from [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-kernel']the OGs Wiki[/URL], though I would advise to just use a copy of `uImage` instead.
-* `dm365_secret.bin` is really unique for every machine and can't be just downloaded; but if it prevents you from booting, it is damaged anyway; you can download a version which shouldn't prevent booting at [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-encrypted-partition']the OGs Wiki[/URL].
-* `ubifs-partition.ubi` is a big partition, and most complicated one to fix; it also contains some machine-specific files, so don't reflash it unless it really is damaged; [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-root-filesystem']The OGs Wiki[/URL] has a link to it, too.
+
+* `uImage_recovery` can be downloaded from
+  [the OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-kernel),
+  though I would advise to just use a copy of `uImage` instead.
+
+* `dm365_secret.bin` is really unique for every machine and can't be just
+  downloaded; but if it prevents you from booting, it is damaged anyway;
+  you can download a version which shouldn't prevent booting at
+  [the OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-encrypted-partition).
+
+* `ubifs-partition.ubi` is a big partition, and most complicated one to fix; it also
+  contains some machine-specific files, so don't reflash it unless it really is damaged;
+  [The OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-root-filesystem) 
+  has a link to it, too.
 
 ## Re-flashing bootloader
 
-To re-flash bootloader, you first need to force the chip into serial programming mode. This will make the chip ignore content of NAND memory, and instead wait for commands on serial interface. To enter serial programming mode, solder the Boot Select service pad `BTSEL` to `3.3V` pad.
+To re-flash bootloader, you first need to force the chip into serial
+programming mode. This will make the chip ignore content of NAND memory,
+and instead wait for commands on serial interface. To enter serial programming
+mode, solder the Boot Select service pad `BTSEL` to `3.3V` pad.
 
 [ATTACH type="full" alt="flashing_dm36x_usb2ttl_soldering_bootloader.jpg"]111460[/ATTACH]
 
@@ -531,7 +547,7 @@ It is possible that the NAND chip is completely damaged and just won't accept pr
 
 After bootloader is re-flashed, disconnect the `BTSEL` pad and get back to chapter "Finding issues in logs from terminal" to verify whether the whole boot succeeds.
 
-[U]Remember to unsolder the pad, otherwise you will continue seeing `BOOTME` only![/U]
+<u>Remember to unsolder the pad, otherwise you will continue seeing `BOOTME` only!</u>
 
 ## Re-flashing kernel
 
@@ -595,16 +611,23 @@ Remember that if you reboot the board, your kernel is no longer in RAM - so you 
 
 If the NAND Write fails, make sure your board is powered with high enough amperage, and re-try a few times. The NAND is unusable only if writing both Primary and Recovery kernel fails - you really only need one.
 
-After the kernel is re-flashed, reboot the board and get back to chapter "Finding issues in logs from terminal" to verify whether the whole boot succeeds.
+After the kernel is re-flashed, reboot the board and get back to chapter
+"[[#Finding issues in logs from terminal]]" to verify whether the whole boot
+succeeds.
 
 ## Re-flashing encrypted partition
 
-The need to re-flash the encrypted partition is a rare case and I won't be describing it in detail. For instructions, see [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-encrypted-partition']encrypted partition flashing instructions at OGs Wiki[/URL].
+The need to re-flash the encrypted partition is a rare case and I won't be
+describing it in detail. For instructions, see
+[encrypted partition flashing instructions at OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-encrypted-partition).
 
 ## Re-flashing root filesystem
 
-Usually UbiFS can fix any errors within its structure, so I won't be describing re-flashing it in detail. For instructions, see [URL='https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-root-filesystem']root filesystem flashing instructions at OGs Wiki[/URL].
+Usually UbiFS can fix any errors within its structure, so I won't be describing
+re-flashing it in detail. For instructions, see
+[root filesystem flashing instructions at OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-root-filesystem).
 
 ## The end
 
-That concludes the guide. Hopefully you have a working mobile phone link on your GL300 remote controller now.
+That concludes the guide. Hopefully you have a working mobile phone link on
+your GL300 remote controller now.
