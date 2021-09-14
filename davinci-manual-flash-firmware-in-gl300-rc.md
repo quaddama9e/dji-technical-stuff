@@ -130,91 +130,150 @@ Now, connect everything:
 * plug your USB-to-TTL converter into a port from your PC; make sure to switch
   it to 3.3V logic, if it has a jumper for that
 
-[ATTACH type="full" alt="flashing_dm36x_usb2ttl_soldering.jpg"]111458[/ATTACH]
+![USB2TTL soldered to GL300 Interface board Test Pads](pictures/flashing_dm36x_usb2ttl_soldering.jpg)
 
-You may wonder why we use 3.3V logic, even though we're supplying the board with 5V power. This is because the board is really supplying 3.3V to all the chips - it converts the 5V at input to 3.3V before sending it anywhere further.
+You may wonder why we use 3.3V logic, even though we're supplying the board
+with 5V power. This is because the board is really supplying 3.3V to all the
+chips - it converts the 5V at input to 3.3V before sending it anywhere further.
 
-After you've connected the USB-to-TTL to your PC, it should've installed the new device. In case of Windows you should've heard a sound queue and the device appearing in [I]"Device Manager"[/I] under [I]"Ports"[/I], in case of Linux - a device appearing as "`/dev/ttyUSB*`" and messages about its installation being visible in "`dmesg`" output.
-[ATTACH type="full" alt="flashing_dm36x_windows_usb2ttl_ports2.png"]111456[/ATTACH]
+After you've connected the USB-to-TTL to your PC, it should've installed the
+new device. In case of Windows you should've heard a sound queue and the device
+appearing in _"Device Manager"_ under _"Ports"_, in case of Linux -
+a device appearing as "`/dev/ttyUSB*`" and messages about its installation
+being visible in "`dmesg`" output.
+
+![Windows Device Manager showing USB2TTL ports](pictures/flashing_dm36x_windows_usb2ttl_ports2.png)
 
 ## Connecting to the debug serial interface
 
-Connect to the USB-to-TTL device using a terminal application. For windows, use [URL='http://www.extraputty.com/']ExtraPuTTY[/URL]; for Linux - either [URL='https://linux.die.net/man/1/minicom']minicom[/URL] or [URL='https://linux.die.net/man/8/picocom']picocom[/URL].
+Connect to the USB-to-TTL device using a terminal application. For windows, use
+[ExtraPuTTY](http://www.extraputty.com/); for Linux - either
+[minicom](https://linux.die.net/man/1/minicom) or
+[picocom](https://linux.die.net/man/8/picocom).
 
-[ATTACH type="full" alt="flashing_dm36x_windows_usb2ttl_putty2.png"]111457[/ATTACH]
+![PuTTY serial connection configuration window](pictures/flashing_dm36x_windows_usb2ttl_putty2.png)
 
-Set transmission configuration to 115200 8N1 (baud rate: 115200, data bits: 8, parity: None, stop bits: 1) and connect to the proper serial device (the one which appeared in [I]"Device Manager"[/I] or "`dmesg`"). You should see an empty window, with cursor only.
+Set transmission configuration to 115200 8N1 (baud rate: 115200, data bits: 8,
+parity: None, stop bits: 1) and connect to the proper serial device (the one
+which appeared in _"Device Manager"_ or "`dmesg`").
+You should see an empty window, with cursor only.
 
-[ATTACH type="full" alt="flashing_dm36x_usb2ttl_putty_empty2.png"]111459[/ATTACH]
+![PuTTY window connected to USB2TTL without any output printed](pictures/flashing_dm36x_usb2ttl_putty_empty2.png)
 
 Everything is ready for a first boot.
 
 ## Booting the board with debug interface connected
 
-Connect the 5V power pin to start booting the board. What you see on the terminal screen determines the further steps.
+Connect the 5V power pin to start booting the board. What you see on the
+terminal screen determines the further steps.
 
 Possible cases:
 
-[SIZE=4][B]1. Magic Smoke escapes.[/B][/SIZE]
+### 1. Magic Smoke escapes.
 
-   If this is what happens, please describe details so we could all have a laugh.. or maybe avoid your mistake.
+If this is what happens, please describe details so we could all have a laugh..
+or maybe avoid your mistake.
 
-[SIZE=4][B]2. Nothing happens. Still only cursor on screen.[/B][/SIZE]
+### 2. Nothing happens. Still only cursor on screen.
 
-   In this case we can't be sure whether the DM36x doesn't print anything (which indicates bootloader damage), or your serial connection is broken somehow.
-   Your setup, you need to test by yourself. Maybe RX and TX wires are switched? Maybe your USB-to-TTL just doesn't work? If there's no apparent issue, you can just assume it's bootloader damage. While fixing it, you will have another opportunity to test the serial setup.
-   To fix bootloader damage - go to "Re-flashing bootloader" chapter below.
+In this case we can't be sure whether the DM36x doesn't print anything (which
+indicates bootloader damage), or your serial connection is broken somehow.
 
-[SIZE=4][B]3. The terminal outputs something, but not readable text - just garbage.[/B][/SIZE]
+Your setup, you need to test by yourself. Maybe RX and TX wires are switched?
+Maybe your USB-to-TTL just doesn't work? If there's no apparent issue, you can
+just assume it's bootloader damage. While fixing it, you will have another
+opportunity to test the serial setup.
 
-   This is a clear indication of your serial connection being incorrectly configured. Make sure you use recommended terminal apps. Make sure you've entered transmission params correctly.
-   The DM36x is sending out text, and something from your setup changes it into garbage. Fix your setup.
+To fix bootloader damage - go to "_Re-flashing bootloader_" chapter below.
 
-[SIZE=4][B]4. The terminal outputs many lines of text.[/B][/SIZE]
+### 3. The terminal outputs something, but not readable text - just garbage.
 
-   This is what we expect from DM36x if bootloader is able to execute. You now need to analyze the text to figure out if everything boots properly, and if not - at which part it stops.
-   Go to "Finding issues in logs from terminal" chapter below.
+This is a clear indication of your serial connection being incorrectly
+configured. Make sure you use recommended terminal apps. Make sure
+you've entered transmission params correctly.
 
-After log are captured, you can disconnect the 5V power. In any of the cases above, you may want to read "Overview of the boot process" chapter below to get an understanding of the whole thing.
+The DM36x is sending out text, and something from your setup changes it into
+garbage. Fix your setup.
+
+### 4. The terminal outputs many lines of text.
+
+This is what we expect from DM36x if bootloader is able to execute. You now
+need to analyze the text to figure out if everything boots properly, and if
+not - at which part it stops.
+
+Go to "_Finding issues in logs from terminal_" chapter below.
+
+After log are captured, you can disconnect the 5V power. In any of the cases
+above, you may want to read "_Overview of the boot process_" chapter below to
+get an understanding of the whole thing.
 
 ## Overview of the boot process
 
 Booting of the DaVinci Linux on DM36x consists of the following parts:
 
-[SIZE=4][B]1. Bootloader loads and selects a kernel to run[/B][/SIZE]
+### 1. Bootloader loads and selects a kernel to run
 
-   Bootloader is just a short program which prepares grounds for the Operating System to load. On your PC, you have bootloader as well:
-   - if you're running Windows, it is the [URL='https://en.wikipedia.org/wiki/Windows_NT_6_startup_process']place where you can select between "normal boot" and "safe mode"[/URL], hidden unless ther's an issue
-   - if you're running Linux, you probably see [URL='https://en.wikipedia.org/wiki/GNU_GRUB']GRUB[/URL] menu at startup, where you can select older version of kernel to start; though there are many bootloaders to choose from
+Bootloader is just a short program which prepares grounds for the Operating
+System to load. On your PC, you have bootloader as well:
 
-   The DaVinci Linux uses [URL='https://en.wikipedia.org/wiki/Das_U-Boot']U-Boot[/URL] as its bootloader.
+* if you're running Windows, it is the 
+  [place where you can select between "normal boot" and "safe mode"](https://en.wikipedia.org/wiki/Windows_NT_6_startup_process),
+  hidden unless there's an issue
 
-[SIZE=4][B]2. Kernel starts, initializes drivers for available hardware components[/B][/SIZE]
+* if you're running Linux, you probably see
+  [GRUB](https://en.wikipedia.org/wiki/GNU_GRUB)
+   menu at startup, where you can select older version of kernel to start;
+  though there are many bootloaders to choose from
 
-   The messages from kernel are easy to spot, as they're preceded by time marking in square brackets, ie. `[ 0.123456]`.
+The DaVinci Linux uses [U-Boot](https://en.wikipedia.org/wiki/Das_U-Boot)
+as its bootloader.
 
-[SIZE=4][B]3. Kernel mounts root filesystem[/B][/SIZE]
+### 2. Kernel starts, initializes drivers for available hardware components
 
-   This is technically part of kernel startup, but good to separate as a possible point of failure. Until this point, the kernel had no access to any additional files.
-   Now it prepares the mechanism to access files within the system - "[URL='https://en.wikipedia.org/wiki/Mount_(computing)']mounts[/URL]" one of the partitions as root filesystem. Root filesystem is the base for accessing everything within [URL='https://en.wikipedia.org/wiki/Unix']UNIX compliant[/URL] systems like Linux - not only normal files and folders, but also devices and processes. The partition is using [URL='https://en.wikipedia.org/wiki/UBIFS']UBI File System[/URL].
+The messages from kernel are easy to spot, as they're preceded by time marking
+in square brackets, ie. `[ 0.123456]`.
 
-[SIZE=4][B]4. Application which decodes and routes data and video between the RC and Mobile Device starts[/B][/SIZE]
+### 3. Kernel mounts root filesystem
 
-   A few last lines of the booting process is just loading the application which connects to [URL='https://www.cypress.com/part/cy7c68013a-128axc']Cypress 68013[/URL] chip within the RC, and acts as USB Master for the Mobile Device. At this point, user can type commands to the Linux shell. The `stop` command for example will terminate the application so that it stops spewing messages.
+This is technically part of kernel startup, but good to separate as a possible
+point of failure. Until this point, the kernel had no access to any additional
+files.
+
+Now it prepares the mechanism to access files within the system - 
+"[mounts](https://en.wikipedia.org/wiki/Mount_(computing))"
+one of the partitions as root filesystem. Root filesystem is the base for
+accessing everything within [UNIX compliant](https://en.wikipedia.org/wiki/Unix)
+systems like Linux - not only normal files and folders, but also devices and
+processes. The partition is using [UBI File System](https://en.wikipedia.org/wiki/UBIFS).
+
+### 4. Application which decodes and routes data and video between the RC and Mobile Device starts
+
+A few last lines of the booting process is just loading the application which
+connects to [Cypress 68013](https://www.cypress.com/part/cy7c68013a-128axc)
+chip within the RC, and acts as USB Master for the Mobile Device.
+At this point, user can type commands to the Linux shell. The `stop` command
+for example will terminate the application so that it stops spewing messages.
 
 ## Finding issues in logs from terminal
 
-[SIZE=4][B]1. Bootloader issues[/B][/SIZE]
+### 1. Bootloader issues
 
-The first question we need to ask is whether U-Boot is working properly. This is easy to check, as the main purpose of bootloader is to load kernel - so if it is trying to load kernel, it is working.
-And how do we know whether it tries to load kernel? Easy - if it does, it will print the line:
+The first question we need to ask is whether U-Boot is working properly.
+This is easy to check, as the main purpose of bootloader is to load kernel -
+so if it is trying to load kernel, it is working.
+
+And how do we know whether it tries to load kernel? Easy - if it does, it will
+print the line:
 
 ```
 Loading from nand0, offset 0x??????
 ```
 
-The place where question marks are will contain offset from which the kernel is tried; we're not interested in these yet. As long as a line like above exists in logs, bootloader is working correctly.
-If there's no such line, then you need to re-flash bootloader. Go to "Re-flashing bootloader" chapter below.
+The place where question marks are will contain offset from which the kernel
+is tried; we're not interested in these yet. As long as a line like above
+exists in logs, bootloader is working correctly.
+If there's no such line, then you need to re-flash bootloader. Go to 
+"_Re-flashing bootloader_" chapter below.
 
 For reference, here are all the messages a bootloader has shown on a specific, fully working board:
 
@@ -264,21 +323,34 @@ OK
 Starting kernel ...
 ```
 
-Note that `Bad block table found` in the log above doesn't mean anything wrong. It just shows the place where tables which store bad blocks are located.
+Note that `Bad block table found` in the log above doesn't mean anything wrong.
+It just shows the place where tables which store bad blocks are located.
 
-[SIZE=4][B]2. Kernel issues[/B][/SIZE]
+### 2. Kernel issues
 
-So the bootlader is trying to load kernel. Now let's make sure it is succeeding in the loading. If it does, then the bootloader work should end with `Starting kernel ...` as above. But wait! There are two copies of the kernel stored, and only one of these is proper, working kernel. The other is a recovery kernel, used to make it easier to fix stuff in case primary kernel dies. This recovery kernel can't correctly connect to the Mobile Device.
+So the bootlader is trying to load kernel. Now let's make sure it is succeeding
+in the loading. If it does, then the bootloader work should end with
+`Starting kernel ...` as above. But wait! There are two copies of the kernel
+stored, and only one of these is proper, working kernel.
+The other is a recovery kernel, used to make it easier to fix stuff in case
+primary kernel dies. This recovery kernel can't correctly connect to the
+Mobile Device.
 
-To be sure a primary kernel is being loaded, make sure you don't see the following lines in your logs:
+To be sure a primary kernel is being loaded, make sure you don't see the
+following lines in your logs:
 
 ```
 ERROR: can't get kernel image!
 ```
 
-Primary kernel resides at offset `0x4a0000` in the NAND memory, and recovery kernel sits at `0x900000`. It is possible to have both kernel copies damaged - in that case, you will see `can't get kernel image!` two times, and booting will stop. If at least one kernel is valid, the bootloader will use it and continue booting.
+Primary kernel resides at offset `0x4a0000` in the NAND memory, and recovery
+kernel sits at `0x900000`. It is possible to have both kernel copies damaged -
+in that case, you will see `can't get kernel image!` two times, and booting
+will stop. If at least one kernel is valid, the bootloader will use it and
+continue booting.
 
-For reference, here are the messages a bootloader shows for a board which has both copies of the kernel damaged:
+For reference, here are the messages a bootloader shows for a board which
+has both copies of the kernel damaged:
 
 ```
 Loading from nand0, offset 0x4a0000
@@ -293,9 +365,11 @@ ERROR: can't get kernel image!
 Dji-Pro #
 ```
 
-If any of the kernel copies is damaged, go to "Reflashing kernel" chapter below. If primary kernel starts booting properly, let's look further into the logs.
+If any of the kernel copies is damaged, go to "Reflashing kernel" chapter
+below. If primary kernel starts booting properly, let's look further into
+the logs.
 
-[SIZE=4][B]3. Encryption issues[/B][/SIZE]
+### 3. Encryption issues
 
 The next possible point of failure is encryption initialization. There is a small encrypted partition within the NAND memory, and it is required for the encryption to initialize.
 If that area is damaged, booting will stop(freeze forever) around the message:
@@ -315,7 +389,7 @@ What matters is - if the booting freeze at some point and no more messages are l
 
 In any of above cases, go to "Re-flashing encrypted partition" chapter below.
 
-[SIZE=4][B]4. Root filesystem issues[/B][/SIZE]
+### 4. Root filesystem issues
 
 The next important part of booting is mounting the root filesystem. This happens soon after NAND device initialization, started by `NAND device` type announcement. It looks similar to lines below, though details may vary - DJI uses various NAND chips from several manufacturers:
 
@@ -345,7 +419,7 @@ Then your root filesystem is probably damaged. The booting in such case will usu
 But sometimes it will continue to spew hundreds of `UBI error` instead.
 Go to "Re-flashing root filesystem" chapter below if any of this happens.
 
-[SIZE=4][B]5. When all is good[/B][/SIZE]
+### 5. When all is good
 
 Now, we've discussed many issues, but what if the device booted properly and is working as intended? How to recognize that?
 Well in that case, the chip will continue to print messages after it's booted, at circa one second intervals. The messages may be:
