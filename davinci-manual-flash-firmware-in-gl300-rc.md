@@ -184,13 +184,14 @@ Maybe your USB-to-TTL just doesn't work? If there's no apparent issue, you can
 just assume it's bootloader damage. While fixing it, you will have another
 opportunity to test the serial setup.
 
-To fix bootloader damage - go to "_Re-flashing bootloader_" chapter below.
+To fix bootloader damage - go to "[Re-flashing bootloader](#re-flashing-bootloader)"
+chapter after you finish this one.
 
 ### 3. The terminal outputs something, but not readable text - just garbage.
 
 This is a clear indication of your serial connection being incorrectly
-configured. Make sure you use recommended terminal apps. Make sure
-you've entered transmission params correctly.
+configured. Make sure you use recommended terminal apps.
+Make sure you've entered transmission params correctly.
 
 The DM36x is sending out text, and something from your setup changes it into
 garbage. Fix your setup.
@@ -201,7 +202,8 @@ This is what we expect from DM36x if bootloader is able to execute. You now
 need to analyze the text to figure out if everything boots properly, and if
 not - at which part it stops.
 
-Go to "_Finding issues in logs from terminal_" chapter below.
+Go to "[[Finding issues in logs from terminal]]"
+chapter after you finish this one.
 
 After log are captured, you can disconnect the 5V power. In any of the cases
 above, you may want to read "_Overview of the boot process_" chapter below to
@@ -365,21 +367,30 @@ ERROR: can't get kernel image!
 Dji-Pro #
 ```
 
-If any of the kernel copies is damaged, go to "Reflashing kernel" chapter
-below. If primary kernel starts booting properly, let's look further into
-the logs.
+If any of the kernel copies is damaged, go to "[Reflashing kernel](#reflashing-kernel)"
+chapter below. If primary kernel starts booting properly, let's look into further
+log messages.
 
 ### 3. Encryption issues
 
-The next possible point of failure is encryption initialization. There is a small encrypted partition within the NAND memory, and it is required for the encryption to initialize.
-If that area is damaged, booting will stop(freeze forever) around the message:
+The next possible point of failure is encryption initialization.
+There is a small encrypted partition within the NAND memory, and it is
+required for the encryption to initialize. If that area is damaged, booting
+will stop (freeze forever) around the message:
 
 ```
 [    ?.??????] encrypt device:atsha204 found
 ```
 
-Sometimes the message might also be `encrypt device:at88 found`. Atmel AT88 is an older version of the ATSHA204 chip; GL300 remotes only use ATSHA204, but older drivers show both chips as AT88; it doesn't really matter which one is shown.
-What matters is - if the booting freeze at some point and no more messages are logged, and within the last 20 lines there's the `encrypt device` message, then encrypted partition is probably damaged. Sometimes the freeze happens too fast for the line to print - in such case, the last line printed is one of below:
+Sometimes the message might also be `encrypt device:at88 found`.
+Atmel AT88 is an older version of the ATSHA204 chip; GL300 remotes only use
+ATSHA204, but older drivers show both chips as AT88; it doesn't really matter
+which one is shown.
+What matters is - if the booting freeze at some point and no more messages
+are logged, and within the last 20 lines there's the `encrypt device` message,
+then encrypted partition is probably damaged.
+Sometimes the freeze happens too fast for the line to print - in such case,
+the last line printed is one of below:
 
 ```
 [    ?.??????] NET: Registered protocol family 17
@@ -387,11 +398,14 @@ What matters is - if the booting freeze at some point and no more messages are l
 [    ?.??????] ksocket init
 ```
 
-In any of above cases, go to "Re-flashing encrypted partition" chapter below.
+In any of above cases, go to "[[Re-flashing encrypted partition]]" chapter below.
 
 ### 4. Root filesystem issues
 
-The next important part of booting is mounting the root filesystem. This happens soon after NAND device initialization, started by `NAND device` type announcement. It looks similar to lines below, though details may vary - DJI uses various NAND chips from several manufacturers:
+The next important part of booting is mounting the root filesystem.
+This happens soon after NAND device initialization, started by `NAND device`
+type announcement. It looks similar to lines below, though details may vary -
+DJI uses various NAND chips from several manufacturers:
 
 ```
 [    0.570000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xf1 (Micron NAND 128MiB 3,3V 8-bit)
@@ -417,12 +431,15 @@ Then your root filesystem is probably damaged. The booting in such case will usu
 ```
 
 But sometimes it will continue to spew hundreds of `UBI error` instead.
-Go to "Re-flashing root filesystem" chapter below if any of this happens.
+Go to "[[Re-flashing root filesystem]]"
+chapter after yiu finish this one, if any of this happens.
 
 ### 5. When all is good
 
-Now, we've discussed many issues, but what if the device booted properly and is working as intended? How to recognize that?
-Well in that case, the chip will continue to print messages after it's booted, at circa one second intervals. The messages may be:
+Now, we've discussed many issues, but what if the device booted properly and
+is working as intended? How to recognize that?
+Well in that case, the chip will continue to print messages after it's booted,
+at circa one second intervals. The messages may be:
 
 ```
 DummyRead68013 0.000000kb
@@ -439,8 +456,13 @@ read 68013  return size = 0
 0kbps
 ```
 
-If the messages above are not shown, but what you see doesn't match any of the described cases - you will have to ask someone proficient with Linux for help.
-Before jumping to the chapter which described your issue, be sure to read "Downloading images and tools" below to get all the things you need to re-flash.
+If the messages above are not shown, but what you see doesn't match any of
+the described cases - you will have to ask someone proficient with Linux
+for help.
+
+Before jumping to the chapter which described your issue, be sure to read
+"[[Downloading images and tools]]" below to get all the things you need
+to re-flash.
 
 ## Downloading images and tools
 
