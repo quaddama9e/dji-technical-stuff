@@ -1,5 +1,20 @@
 # Replacing flash chip in DM365 chip within Phantom 3 Pro gimbal
 
+### Table of Contents
+[Problem statement](#problem-statement)  
+[Finding the faulty board](#finding-the-faulty-board)  
+[Finding the faulty processor](#finding-the-faulty-processor)  
+[Checking why it does not boot](#checking-why-it-does-not-boot)  
+[First try at flashing](#first-try-at-flashing)  
+[Tries at re-flowing](#tries-at-re-flowing)  
+[Replacing the NAND chip](#replacing-the-nand-chip)  
+[Flashing the bootloader](#flashing-the-bootloader)  
+[Preparing to flash from SD-card](#preparing-to-flash-from-sd-card)  
+[Getting partition images to flash](#getting-partition-images-to-flash)  
+[Flashing all the partitions](#flashing-all-the-partitions)  
+[First boot of the new OS](#first-boot-of-the-new-os)  
+[My FPV is now choppy, at 8 FPS](#my-fpv-is-now-choppy-at-8-fps)  
+
 ## Problem statement
 
 I had a _Phantom 3 Pro_ gimbal which didn't allowed me to see the FPV feed.

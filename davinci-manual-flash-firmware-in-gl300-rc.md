@@ -1,5 +1,20 @@
 # Fixing flash programming in DM365 chip within GL300 remote controller
 
+### Table of Contents
+[Preamble](#preamble)  
+[Problem statement](#problem-statement)  
+[Preparations](#preparations)  
+[Soldering to debug serial interface](#soldering-to-debug-serial-interface)  
+[Connecting to the debug serial interface](#connecting-to-the-debug-serial-interface)  
+[Booting the board with debug interface connected](#booting-the-board-with-debug-interface-connected)  
+[Overview of the boot process](#overview-of-the-boot-process)  
+[Finding issues in logs from terminal](#finding-issues-in-logs-from-terminal)  
+[Downloading images and tools](#downloading-images-and-tools)  
+[Re-flashing bootloader](#re-flashing-bootloader)  
+[Re-flashing kernel](#re-flashing-kernel)  
+[Re-flashing encrypted partition](#re-flashing-encrypted-partition)  
+[Re-flashing root filesystem](#re-flashing-root-filesystem)  
+
 ## Preamble
 
 Here you will find not only instructions to blindly follow, but an explanation
@@ -471,7 +486,7 @@ to re-flash.
 In case you'll be be flashing bootloader, you will need Serial Flasher Host
 Program from Texas Instruments.
 Original releases of this tool are at [Arago Project Releases](http://arago-project.org/files/releases/).
-They were linked to it at, now defuc,
+They were linked to it at, now defunc,
 [DaVinci GIT Linux Kernel Releases page](https://web.archive.org/web/20100525171208/http://processors.wiki.ti.com/index.php/DaVinci_GIT_Linux_Kernel_Releases).
 The latest release which still supports the DM36x line is
 `davinci-psp_03.01.01.39`. Inside, there is `board-utils-davinci.tar.gz`

@@ -1,5 +1,13 @@
 # Fix no video feed / black screen / no image transmission / no FPV on Ph3 Pro
 
+### Table of Contents
+[Diagnosis diagram](#diagnosis-diagram)  
+[DaVinci DM3xx chip not booting](#davinci-dm3xx-chip-not-booting)  
+[Remarks](#remarks)  
+[Related info](#related-info)  
+
+## Diagnosis diagram
+
 Here is the diagram for diagnosing and fixing the most popular issue with
 _Phantom 3 Professional_. The solution will also work fine for _Ph3 Advanced_
 (though some branches are unreachable on this platform).
