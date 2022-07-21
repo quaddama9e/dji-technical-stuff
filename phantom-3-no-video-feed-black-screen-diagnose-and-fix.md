@@ -13,13 +13,15 @@ them with known good ones as one of first steps.
 Video Feed Service Diagram:
 ![Phantom 3 no video feed / black screen service diagram](pictures/phantom-3-no-video-feed-black-screen-service-diagram.png)
 
-<details>
- <summary>DaVinci diagnosis diagram and links</summary>
+## DaVinci DM3xx chip not booting
 
 Here is the graph for fixing DaVinci media processor, referenced in Video
 Feed Service Diagram. If any of the instructions is too vague for you,
 check the links below the diagram - they contain more detailed explanations
 for specific actions.
+
+<details>
+ <summary>DaVinci diagnosis diagram and links</summary>
 
 DaVinci Chip Service Diagram:
 ![DaVinci Boot Service Diagram](pictures/phantom-3-davinci-not-booting-service-diagram.png)
@@ -39,12 +41,16 @@ Replacing NAND chip for DaVinci processor:
 [Fixing flash in DM365 chip within Ph3 Pro gimbal](https://phantompilots.com/threads/fixing-flash-in-dm365-chip-within-ph3-pro-gimbal.127310/)
 </details>
 
+## Remarks
+
 I can't remember all of RC diagnosis, so it's done only partially on the chart.
 
 If I missed any typical cause, or you think something should be different -
 please write. Same if you're stuck in a step and no answers match what you see.
 
 I hope this will be the place to direct anyone with this kind of issue.
+
+## Related info
 
 Links to more info below.
 
@@ -61,3 +67,5 @@ Description of firmware modules, which chip they program and which board they're
 
 Board descriptions, useful for component level repairs:
 [o-gs/dji-firmware-tools Wiki: Dji Hardware](https://github.com/o-gs/dji-firmware-tools/wiki/DJI-Hardware#phantom-3-proadv)
+
+## EOD
