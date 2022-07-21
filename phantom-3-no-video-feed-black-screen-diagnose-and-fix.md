@@ -13,14 +13,16 @@ them with known good ones as one of first steps.
 Video Feed Service Diagram:
 ![Phantom 3 no video feed / black screen service diagram](pictures/phantom-3-no-video-feed-black-screen-service-diagram.png)
 
-[SPOILER=DaVinci diagnosis diagram and links]
+<details>
+ <summary>DaVinci diagnosis diagram and links</summary>
+
 Here is the graph for fixing DaVinci media processor, referenced in Video
 Feed Service Diagram. If any of the instructions is too vague for you,
 check the links below the diagram - they contain more detailed explanations
 for specific actions.
 
 DaVinci Chip Service Diagram:
-[IMG]https://phantompilots.com/media/ph3-pro-davinci-service-diagram-v2.4328/full[/IMG]
+![DaVinci Boot Service Diagram](pictures/phantom-3-davinci-not-booting-service-diagram.png)
 
 Beginner level instruction on re-flashing bootloader on NAND for DaVinci
 processor in gimbal:
@@ -35,7 +37,7 @@ Generic guide on flashing all partitions on NAND for DaVinci processor:
 
 Replacing NAND chip for DaVinci processor:
 [Fixing flash in DM365 chip within Ph3 Pro gimbal](https://phantompilots.com/threads/fixing-flash-in-dm365-chip-within-ph3-pro-gimbal.127310/)
-[/SPOILER]
+</details>
 
 I can't remember all of RC diagnosis, so it's done only partially on the chart.
 
