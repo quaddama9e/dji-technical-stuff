@@ -68,4 +68,7 @@ Description of firmware modules, which chip they program and which board they're
 Board descriptions, useful for component level repairs:
 [o-gs/dji-firmware-tools Wiki: Dji Hardware](https://github.com/o-gs/dji-firmware-tools/wiki/DJI-Hardware#phantom-3-proadv)
 
-## EOD
+## The end
+
+That concludes the service info. Hopefully you now have a working video feed
+from the Phantom drone to a mobile device.
