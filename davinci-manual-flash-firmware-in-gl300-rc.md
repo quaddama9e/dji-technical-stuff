@@ -83,7 +83,7 @@ To further diagnose and fix the board, you will need:
 * a temperature controlled *soldering iron*, and enough skill to solder wires
   to test points on the board
 
-* a *USB-to-TTL* converter (also known by brand name - FTDI), which supports
+* an *USB-to-TTL* converter (also known by brand name - FTDI), which supports
   *3.3V logic* (note that if device claims it's "universal" but there's no
   jumper to switch to 3.3V, then it is crap and will not work)
 
@@ -576,9 +576,15 @@ For a complete log, see
 [u-boot flashing instructions at OGs Wiki](https://github.com/o-gs/dji-firmware-tools/wiki/Flashing-firmware-on-DaVinci-media-processors#flashing-u-boot-by-serial-port).
 
 Sometimes the tool starts listening at wrong place and isn't able to understand
-the first message, which prevents it from moving forward. If that happens, just
-stop its execution with [I]Ctrl+C[/I] and then re-run the exact same command
-again.
+the first message, which prevents it from moving forward. The last message
+displayed to the user looks same as if USB-to-TTL was not connected correctly:
+
+```
+Waiting for the DM36x...
+```
+
+If that happens, just interrupt its execution with _Ctrl+C_ and then re-run
+the exact same command again.
 
 If everything went well, the final message will be:
 
